@@ -6,21 +6,22 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.omjoonkim.app.mission.R
+import com.omjoonkim.app.mission.error.Errors
 import com.omjoonkim.app.mission.network.model.Repo
 import com.omjoonkim.app.mission.network.model.User
 import com.omjoonkim.app.mission.setImageWithGlide
+import com.omjoonkim.app.mission.showToast
 import com.omjoonkim.app.mission.ui.BaseActivity
 import com.omjoonkim.app.mission.viewmodel.MainViewModel
 import com.omjoonkim.app.mission.viewmodel.RequiresActivityViewModel
 import com.trello.rxlifecycle2.kotlin.bindToLifecycle
-import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.viewholder_user_info.view.*
 import kotlinx.android.synthetic.main.viewholder_user_repo.view.*
-import javax.inject.Inject
 
 @RequiresActivityViewModel(value = MainViewModel::class)
 class MainActivity : BaseActivity<MainViewModel>() {
@@ -43,6 +44,15 @@ class MainActivity : BaseActivity<MainViewModel>() {
                 .subscribe {
                     adapter.repos = it
                     adapter.notifyDataSetChanged()
+                }
+
+        viewModel.error.bindToLifecycle(this)
+                .subscribe {
+                    if(it is Errors)
+                        showToast(it.errorText)
+                    else
+                        showToast("알 수 없는 에러.")
+                    finish()
                 }
 
     }
@@ -96,7 +106,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
             fun bind(item: Repo?) =
                     item?.let {
                         itemView.repoName.text = it.name
-                        itemView.description.text = it.name
+                        itemView.description.text = it.description
                         itemView.countOfStar.text = it.starCount.toString()
                     }
         }
