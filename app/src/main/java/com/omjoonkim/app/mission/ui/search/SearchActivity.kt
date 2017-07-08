@@ -1,7 +1,6 @@
-package com.omjoonkim.app.mission.ui
+package com.omjoonkim.app.mission.ui.search
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
 import com.omjoonkim.app.mission.R
 import kotlinx.android.synthetic.main.activity_search.*
