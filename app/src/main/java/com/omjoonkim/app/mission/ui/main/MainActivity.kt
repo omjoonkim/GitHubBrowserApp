@@ -6,8 +6,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.omjoonkim.app.mission.R
 import com.omjoonkim.app.mission.error.Errors
@@ -22,11 +20,13 @@ import com.trello.rxlifecycle2.kotlin.bindToLifecycle
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.viewholder_user_info.view.*
 import kotlinx.android.synthetic.main.viewholder_user_repo.view.*
+import javax.inject.Inject
 
 @RequiresActivityViewModel(value = MainViewModel::class)
 class MainActivity : BaseActivity<MainViewModel>() {
 
-    val requestManager: RequestManager by lazy { Glide.with(this) }
+    @Inject
+    lateinit var requestManager: RequestManager
 
     private val adapter: MainListAdapter by lazy { MainListAdapter(requestManager) }
 
@@ -48,13 +48,12 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
         viewModel.error.bindToLifecycle(this)
                 .subscribe {
-                    if(it is Errors)
+                    if (it is Errors)
                         showToast(it.errorText)
                     else
                         showToast("알 수 없는 에러.")
                     finish()
                 }
-
     }
 
     private fun recyclerViewInit() {

@@ -15,25 +15,25 @@ object AppInjector {
     fun init(app: App) {
         DaggerAppComponent.builder().application(app)
                 .build().inject(app)
-//        app.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
-//            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle) {
-//                handleActivity(activity)
-//            }
-//
-//            override fun onActivityStarted(activity: Activity) {}
-//
-//            override fun onActivityResumed(activity: Activity) {}
-//
-//            override fun onActivityPaused(activity: Activity) {}
-//
-//            override fun onActivityStopped(activity: Activity) {}
-//
-//            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
-//
-//            override fun onActivityDestroyed(activity: Activity) {}
-//        })
+        app.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+                handleActivity(activity)
+            }
+
+            override fun onActivityStarted(activity: Activity) {}
+
+            override fun onActivityResumed(activity: Activity) {}
+
+            override fun onActivityPaused(activity: Activity) {}
+
+            override fun onActivityStopped(activity: Activity) {}
+
+            override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
+
+            override fun onActivityDestroyed(activity: Activity) {}
+        })
     }
 
-    private fun handleActivity(activity: Activity) {
-    }
+    private fun handleActivity(activity: Activity) =
+            AndroidInjection.inject(activity)
 }
