@@ -5,33 +5,33 @@ import android.content.Intent
 import com.omjoonkim.app.mission.network.model.Repo
 import com.omjoonkim.app.mission.network.model.User
 import com.omjoonkim.app.mission.rx.neverError
-import com.trello.rxlifecycle2.kotlin.bind
 import io.reactivex.Observable
+import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
-import retrofit2.HttpException
 
 class MainViewModel(context: Context) : BaseViewModel(context), OutPuts {
 
     val outPuts = this
-    private val user = PublishSubject.create<User>()
-    private val repos = PublishSubject.create<List<Repo>>()
+    private val listDatas = PublishSubject.create<Pair<User, List<Repo>>>()
 
     init {
         intent.filter { it.action == Intent.ACTION_VIEW }
                 .map { it.data.path.substring(1) }
-                .flatMapMaybe { enviorment.gitHubDataRepository.getUserInfo(it).neverError(error) }
-                .doOnNext { user.onNext(it) }
-                .flatMapMaybe { enviorment.gitHubDataRepository.getUserRepos(it.name).neverError(error) }
+                .flatMapMaybe {
+                    enviorment.gitHubDataRepository.getUserInfo(it).neverError(error)
+                            .zipWith(enviorment.gitHubDataRepository.getUserRepos(it).neverError(error),
+                                    BiFunction<User, List<Repo>, Pair<User, List<Repo>>> { t1, t2 ->
+                                        Pair(t1, t2)
+                                    }
+                            )
+                }
                 .bindToLifeCycle()
-                .subscribe(repos)
+                .subscribe(listDatas)
     }
 
-    override fun user(): Observable<User> = user
-
-    override fun repos(): Observable<List<Repo>> = repos
+    override fun listDatas(): Observable<Pair<User, List<Repo>>> = listDatas
 }
 
 interface OutPuts {
-    fun user(): Observable<User>
-    fun repos(): Observable<List<Repo>>
+    fun listDatas(): Observable<Pair<User, List<Repo>>>
 }

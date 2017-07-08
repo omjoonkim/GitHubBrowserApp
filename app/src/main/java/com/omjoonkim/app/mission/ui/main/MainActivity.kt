@@ -35,14 +35,11 @@ class MainActivity : BaseActivity<MainViewModel>() {
         setContentView(R.layout.activity_main)
         recyclerViewInit()
 
-        viewModel.outPuts.user()
+        viewModel.outPuts.listDatas()
                 .bindToLifecycle(this)
-                .subscribe { adapter.user = it }
-
-        viewModel.outPuts.repos()
-                .bindToLifecycle(this)
-                .subscribe {
-                    adapter.repos = it
+                .subscribe{
+                    adapter.user = it.first
+                    adapter.repos = it.second
                     adapter.notifyDataSetChanged()
                 }
 
