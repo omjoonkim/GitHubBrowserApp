@@ -27,6 +27,7 @@ class MainViewModel(context: Context) : BaseViewModel(context), OutPuts {
                 }
                 .bindToLifeCycle()
                 .subscribe(listDatas)
+
     }
 
     override fun listDatas(): Observable<Pair<User, List<Repo>>> = listDatas

@@ -1,6 +1,6 @@
 package com.omjoonkim.app.mission.di
 
-import com.omjoonkim.app.mission.ui.SearchActivity
+import com.omjoonkim.app.mission.ui.search.SearchActivity
 import com.omjoonkim.app.mission.ui.main.MainActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector

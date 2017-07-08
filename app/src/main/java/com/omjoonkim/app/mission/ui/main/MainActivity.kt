@@ -37,7 +37,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
         viewModel.outPuts.listDatas()
                 .bindToLifecycle(this)
-                .subscribe{
+                .subscribe {
                     adapter.user = it.first
                     adapter.repos = it.second
                     adapter.notifyDataSetChanged()

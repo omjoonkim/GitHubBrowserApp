@@ -13,7 +13,7 @@
 		android:theme="@style/AppTheme">
 
 		<activity
-			android:name="com.omjoonkim.app.mission.ui.SearchActivity"
+			android:name="com.omjoonkim.app.mission.ui.search.SearchActivity"
 			>
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
