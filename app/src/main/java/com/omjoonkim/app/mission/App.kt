@@ -15,6 +15,9 @@ class App : Application(), HasActivityInjector {
     }
 
     @Inject
+    lateinit var enviorment: Environment
+
+    @Inject
     lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
 
 

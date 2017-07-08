@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.CallSuper
 import android.util.Pair
+import com.omjoonkim.app.mission.App
 import com.omjoonkim.app.mission.rx.LifecycleTransformer
 import com.omjoonkim.app.mission.ui.BaseActivity
 import com.trello.rxlifecycle2.android.ActivityEvent
@@ -25,6 +26,7 @@ abstract class RootViewModel {
 open class BaseViewModel(context: Context) : RootViewModel() {
     private val viewChange = PublishSubject.create<BaseActivity<BaseViewModel>>()
     val view: Observable<BaseActivity<BaseViewModel>> = viewChange
+    protected val enviorment by lazy { (context.applicationContext as App).enviorment }
     val error: PublishSubject<Throwable> = PublishSubject.create<Throwable>()
     val intent: PublishSubject<Intent> = PublishSubject.create<Intent>()
 

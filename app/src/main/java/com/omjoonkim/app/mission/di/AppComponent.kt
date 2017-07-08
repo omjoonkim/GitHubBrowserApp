@@ -1,6 +1,7 @@
 package com.omjoonkim.app.mission.di
 
 import com.omjoonkim.app.mission.App
+import com.omjoonkim.app.mission.ui.main.MainActivity
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -16,4 +17,5 @@ interface AppComponent {
     }
 
     fun inject(app: App)
+    fun inject(activity: MainActivity)
 }

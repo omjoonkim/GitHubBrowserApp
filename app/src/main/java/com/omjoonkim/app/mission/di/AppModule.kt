@@ -5,6 +5,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.google.gson.Gson
 import com.omjoonkim.app.mission.App
+import com.omjoonkim.app.mission.Environment
 import com.omjoonkim.app.mission.data.GitHubDataRepository
 import com.omjoonkim.app.mission.data.GitHubRepositoryType
 import com.omjoonkim.app.mission.network.APIClient
@@ -19,6 +20,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
+
 @Module
 class AppModule {
 
@@ -29,7 +31,6 @@ class AppModule {
     @Provides
     @Singleton
     fun provideGson(): Gson = Gson()
-
 
     @Provides
     @Singleton
@@ -63,5 +64,16 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun gitHubDataRepository(apiClient: APIClientType) : GitHubRepositoryType= GitHubDataRepository(apiClient)
+    fun gitHubDataRepository(apiClient: APIClientType): GitHubRepositoryType = GitHubDataRepository(apiClient)
+
+    @Provides
+    @Singleton
+    fun enviorment(apiClient: APIClientType,
+                   gitHubRepositoryType: GitHubRepositoryType,
+                   requestManager: RequestManager,
+                   gson: Gson): Environment =
+            Environment(apiClient,
+                    gitHubRepositoryType,
+                    requestManager,
+                    gson)
 }

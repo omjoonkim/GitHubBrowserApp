@@ -1,3 +1,5 @@
 package com.omjoonkim.app.mission.network.model
 
-data class Repo(val name: String, val description: String, val starCount: Int)
+import com.google.gson.annotations.SerializedName
+
+data class Repo(val name: String, val description: String, @SerializedName("stargazers_count") val starCount: Int)

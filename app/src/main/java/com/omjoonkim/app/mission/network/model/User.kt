@@ -1,3 +1,5 @@
 package com.omjoonkim.app.mission.network.model
 
-data class User(val name: String, val profile: String)
+import com.google.gson.annotations.SerializedName
+
+data class User(@SerializedName("login") val name: String, @SerializedName("avatar_url") val profile: String)
