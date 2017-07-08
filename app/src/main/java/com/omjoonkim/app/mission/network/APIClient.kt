@@ -1,5 +1,7 @@
 package com.omjoonkim.app.mission.network
 
+import android.accounts.NetworkErrorException
+import com.omjoonkim.app.mission.error.NotConnectedNetworkError
 import com.omjoonkim.app.mission.error.NotFoundUserError
 import com.omjoonkim.app.mission.network.model.Repo
 import com.omjoonkim.app.mission.network.model.User
@@ -7,6 +9,7 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
+import java.io.IOException
 
 class APIClient(val apiService: APIService) : APIClientType {
 
@@ -16,6 +19,8 @@ class APIClient(val apiService: APIService) : APIClientType {
                         Single.error(
                                 if (it is HttpException && it.code() == 404)
                                     NotFoundUserError()
+                                else if (it is IOException)
+                                    NotConnectedNetworkError()
                                 else
                                     it
                         )
@@ -30,6 +35,8 @@ class APIClient(val apiService: APIService) : APIClientType {
                         Single.error(
                                 if (it is HttpException && it.code() == 404)
                                     NotFoundUserError()
+                                else if (it is IOException)
+                                    NotConnectedNetworkError()
                                 else
                                     it
                         )
