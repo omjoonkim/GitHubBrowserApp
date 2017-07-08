@@ -38,7 +38,6 @@ class MainActivity : BaseActivity<MainViewModel>() {
         recyclerViewInit()
 
         viewModel.outPuts.loading()
-                .observeOn(AndroidSchedulers.mainThread())
                 .bindToLifecycle(this)
                 .subscribe {
                     if (it)
