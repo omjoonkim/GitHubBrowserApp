@@ -3,6 +3,7 @@ package com.omjoonkim.app.mission.ui.main
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.omjoonkim.app.mission.ui.BaseActivity
 import com.omjoonkim.app.mission.viewmodel.MainViewModel
 import com.omjoonkim.app.mission.viewmodel.RequiresActivityViewModel
 import com.trello.rxlifecycle2.kotlin.bindToLifecycle
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.viewholder_user_info.view.*
 import kotlinx.android.synthetic.main.viewholder_user_repo.view.*
@@ -34,6 +36,16 @@ class MainActivity : BaseActivity<MainViewModel>() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         recyclerViewInit()
+
+        viewModel.outPuts.loading()
+                .observeOn(AndroidSchedulers.mainThread())
+                .bindToLifecycle(this)
+                .subscribe {
+                    if (it)
+                        loadingDialog.show()
+                    else
+                        loadingDialog.dismiss()
+                }
 
         viewModel.outPuts.listDatas()
                 .bindToLifecycle(this)
