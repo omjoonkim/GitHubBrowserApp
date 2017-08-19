@@ -3,10 +3,10 @@ package com.omjoonkim.app.mission.ui.main
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.omjoonkim.app.mission.R
 import com.omjoonkim.app.mission.error.Errors
@@ -18,19 +18,16 @@ import com.omjoonkim.app.mission.ui.BaseActivity
 import com.omjoonkim.app.mission.viewmodel.MainViewModel
 import com.omjoonkim.app.mission.viewmodel.RequiresActivityViewModel
 import com.trello.rxlifecycle2.kotlin.bindToLifecycle
-import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.viewholder_user_info.view.*
 import kotlinx.android.synthetic.main.viewholder_user_repo.view.*
-import javax.inject.Inject
 
 @RequiresActivityViewModel(value = MainViewModel::class)
 class MainActivity : BaseActivity<MainViewModel>() {
 
-    @Inject
-    lateinit var requestManager: RequestManager
+    private val requestManager by lazy { Glide.with(this) }
 
-    private val adapter: MainListAdapter by lazy { MainListAdapter(requestManager) }
+    private val adapter: MainListAdapter by lazy { MainListAdapter() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +43,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
                         loadingDialog.dismiss()
                 }
 
-        viewModel.outPuts.listDatas()
+        viewModel.outPuts.refreshListDatas()
                 .bindToLifecycle(this)
                 .subscribe {
                     adapter.user = it.first
@@ -54,7 +51,8 @@ class MainActivity : BaseActivity<MainViewModel>() {
                     adapter.notifyDataSetChanged()
                 }
 
-        viewModel.error.bindToLifecycle(this)
+        viewModel.error
+                .bindToLifecycle(this)
                 .subscribe {
                     if (it is Errors)
                         showToast(it.errorText)
@@ -69,11 +67,10 @@ class MainActivity : BaseActivity<MainViewModel>() {
         recyclerView.adapter = adapter
     }
 
-    private class MainListAdapter(val requestManager: RequestManager) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-        companion object {
-            const val VIEWTYPE_USER_INFO = 0
-            const val VIEWTYPE_USER_REPO = 1
-        }
+    private inner class MainListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+        val VIEWTYPE_USER_INFO = 0
+        val VIEWTYPE_USER_REPO = 1
 
         var user: User? = null
         var repos = emptyList<Repo>()
@@ -100,7 +97,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
         override fun getItemCount(): Int = repos.size + (user?.let { 1 } ?: 0)
 
-        private class UserInfoViewHolder(view: View, val requestManager: RequestManager) : RecyclerView.ViewHolder(view) {
+        private inner class UserInfoViewHolder(view: View, val requestManager: RequestManager) : RecyclerView.ViewHolder(view) {
             fun bind(item: User?) =
                     item?.let {
                         itemView.userName.text = it.name
@@ -109,7 +106,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
         }
 
-        private class UserRepoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private inner class UserRepoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             fun bind(item: Repo?) =
                     item?.let {
                         itemView.repoName.text = it.name

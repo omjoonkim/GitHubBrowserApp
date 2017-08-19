@@ -9,11 +9,17 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
 import com.omjoonkim.app.mission.R
+import com.omjoonkim.app.mission.rx.Parameter
+import com.omjoonkim.app.mission.ui.BaseActivity
+import com.omjoonkim.app.mission.viewmodel.BaseViewModel
+import com.omjoonkim.app.mission.viewmodel.RequiresActivityViewModel
+import com.omjoonkim.app.mission.viewmodel.SearchViewModel
+import com.trello.rxlifecycle2.kotlin.bindToLifecycle
 import kotlinx.android.synthetic.main.activity_search.*
 
-
-class SearchActivity : AppCompatActivity() {
-    val keyboardController by lazy { getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager }
+@RequiresActivityViewModel(SearchViewModel::class)
+class SearchActivity : BaseActivity<SearchViewModel>() {
+    private val keyboardController by lazy { getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -24,12 +30,21 @@ class SearchActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                button_search.isEnabled = s?.isNotEmpty() ?: false
+                viewModel.inPut.name(s.toString())
             }
         })
-        button_search.setOnClickListener {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("testapp://repos/${editText.text}")))
-            keyboardController?.hideSoftInputFromWindow(it.windowToken, 0)
-        }
+
+        button_search.setOnClickListener { viewModel.inPut.clickSearchButton(Parameter.CLICK) }
+
+        viewModel.outPut.setEnabledSearchButton()
+                .bindToLifecycle(this)
+                .subscribe { button_search.isEnabled = it }
+
+        viewModel.outPut.goResultActivity()
+                .bindToLifecycle(this)
+                .subscribe {
+                    keyboardController?.hideSoftInputFromWindow(editText.windowToken, 0)
+                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("testapp://repos/$it")))
+                }
     }
 }

@@ -10,6 +10,7 @@ import com.omjoonkim.app.mission.rx.LifecycleTransformer
 import com.omjoonkim.app.mission.ui.BaseActivity
 import com.trello.rxlifecycle2.android.ActivityEvent
 import io.reactivex.*
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlin.reflect.KClass
 
@@ -25,7 +26,6 @@ abstract class RootViewModel {
 
 open class BaseViewModel(context: Context) : RootViewModel() {
     private val viewChange = PublishSubject.create<BaseActivity<BaseViewModel>>()
-    val view: Observable<BaseActivity<BaseViewModel>> = viewChange
     protected val enviorment by lazy { (context.applicationContext as App).enviorment }
     val error: PublishSubject<Throwable> = PublishSubject.create<Throwable>()
     val intent: PublishSubject<Intent> = PublishSubject.create<Intent>()
@@ -53,8 +53,8 @@ open class BaseViewModel(context: Context) : RootViewModel() {
     }
 
     fun <T> bindToLifecycle(): LifecycleTransformer<T> =
-            LifecycleTransformer(view.switchMap { v -> v.lifecycle().map { e -> Pair.create(v, e) } }
-                    .filter { ve -> isFinished(ve.first, ve.second) })
+            LifecycleTransformer(viewChange.switchMap { v -> v.lifecycle().map { e -> v to e } }
+                    .filter { (view, event) -> isFinished(view, event) })
 
     fun <T> Observable<T>.bindToLifeCycle(): Observable<T> = compose(bindToLifecycle())
     fun <T> Flowable<T>.bindToLifeCycle(): Flowable<T> = compose(bindToLifecycle())

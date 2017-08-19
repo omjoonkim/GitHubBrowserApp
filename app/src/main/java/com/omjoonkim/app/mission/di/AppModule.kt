@@ -63,20 +63,14 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun requestManager(context: Context): RequestManager = Glide.with(context)
-
-    @Provides
-    @Singleton
     fun gitHubDataRepository(apiClient: APIClientType): GitHubRepositoryType = GitHubDataRepository(apiClient)
 
     @Provides
     @Singleton
     fun enviorment(apiClient: APIClientType,
                    gitHubRepositoryType: GitHubRepositoryType,
-                   requestManager: RequestManager,
                    gson: Gson): Environment =
             Environment(apiClient,
                     gitHubRepositoryType,
-                    requestManager,
                     gson)
 }

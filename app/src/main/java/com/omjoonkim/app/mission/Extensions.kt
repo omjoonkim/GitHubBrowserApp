@@ -6,7 +6,6 @@ import android.widget.Toast
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 
-
 fun Context.showToast(text: String) = Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 
 fun Context.showToast(resId: Int) = Toast.makeText(this, resId, Toast.LENGTH_SHORT).show()
