@@ -1,7 +1,7 @@
 package com.omjoonkim.app.mission.viewmodel
 
-import android.content.Context
 import android.content.Intent
+import com.omjoonkim.app.mission.Environment
 import com.omjoonkim.app.mission.network.model.Repo
 import com.omjoonkim.app.mission.network.model.User
 import com.omjoonkim.app.mission.rx.neverError
@@ -10,7 +10,7 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
-class MainViewModel(context: Context) : BaseViewModel(context) {
+class MainViewModel(environment: Environment) : BaseViewModel(environment) {
 
     private val refreshListDatas = PublishSubject.create<Pair<User, List<Repo>>>()
     private val loading = BehaviorSubject.create<Boolean>()
@@ -25,10 +25,10 @@ class MainViewModel(context: Context) : BaseViewModel(context) {
                 .map { it.data.path.substring(1) }
                 .doOnNext { loading.onNext(true) }
                 .flatMapMaybe {
-                    enviorment.gitHubDataRepository
+                    environment.gitHubDataRepository
                             .getUserInfo(it).neverError(error)
                             .zipWith(
-                                    enviorment.gitHubDataRepository
+                                    environment.gitHubDataRepository
                                             .getUserRepos(it).neverError(error),
                                     BiFunction<User, List<Repo>, Pair<User, List<Repo>>> { t1, t2 ->
                                         Pair(t1, t2.sortedByDescending { it.starCount })

@@ -1,22 +1,22 @@
 package com.omjoonkim.app.mission.viewmodel
 
-import android.content.Context
+import com.omjoonkim.app.mission.Environment
 import com.omjoonkim.app.mission.rx.Parameter
 import io.reactivex.Observable
 import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
-class SearchViewModel(context: Context) : BaseViewModel(context) {
+class SearchViewModel(environment: Environment) : BaseViewModel(environment) {
 
     private val name = PublishSubject.create<String>()
     private val clickSearchButton = PublishSubject.create<Parameter>()
     val inPut = object : SearchViewModelInPuts {
         override fun name(name: String) =
-                this@SearchViewModel.name.onNext(name)
+            this@SearchViewModel.name.onNext(name)
 
         override fun clickSearchButton(parameter: Parameter) =
-                this@SearchViewModel.clickSearchButton.onNext(parameter)
+            this@SearchViewModel.clickSearchButton.onNext(parameter)
     }
 
     private val setEnabledSearchButton = PublishSubject.create<Boolean>()

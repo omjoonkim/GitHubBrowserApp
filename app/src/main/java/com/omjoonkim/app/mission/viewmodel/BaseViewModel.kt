@@ -3,20 +3,14 @@ package com.omjoonkim.app.mission.viewmodel
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.annotation.CallSuper
-import android.util.Pair
-import com.omjoonkim.app.mission.App
 import com.omjoonkim.app.mission.rx.LifecycleTransformer
+import androidx.annotation.CallSuper
+import com.omjoonkim.app.mission.Environment
 import com.omjoonkim.app.mission.ui.BaseActivity
 import com.trello.rxlifecycle2.android.ActivityEvent
 import io.reactivex.*
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
-import kotlin.reflect.KClass
-
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class RequiresActivityViewModel(val value: KClass<out BaseViewModel>)
 
 abstract class RootViewModel {
     abstract fun onCreate(context: Context, savedInstanceState: Bundle?)
@@ -24,9 +18,8 @@ abstract class RootViewModel {
     abstract fun onDestroy()
 }
 
-open class BaseViewModel(context: Context) : RootViewModel() {
+open class BaseViewModel(protected val environment : Environment) : RootViewModel() {
     private val viewChange = PublishSubject.create<BaseActivity<BaseViewModel>>()
-    protected val enviorment by lazy { (context.applicationContext as App).enviorment }
     val error: PublishSubject<Throwable> = PublishSubject.create<Throwable>()
     val intent: PublishSubject<Intent> = PublishSubject.create<Intent>()
 

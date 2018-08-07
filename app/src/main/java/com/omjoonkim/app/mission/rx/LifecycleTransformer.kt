@@ -3,9 +3,7 @@ package com.omjoonkim.app.mission.rx
 import io.reactivex.*
 import org.reactivestreams.Publisher
 import java.util.concurrent.CancellationException
-import javax.annotation.ParametersAreNonnullByDefault
 
-@ParametersAreNonnullByDefault
 class LifecycleTransformer<T> internal constructor(internal val observable: Observable<*>) : ObservableTransformer<T, T>, FlowableTransformer<T, T>, SingleTransformer<T, T>, MaybeTransformer<T, T>, CompletableTransformer {
     init {
         checkNotNull(observable, { "observable == null" })
