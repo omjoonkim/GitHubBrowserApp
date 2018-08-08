@@ -1,7 +1,9 @@
 package com.omjoonkim.app.mission.rx
 
+import androidx.lifecycle.LiveDataReactiveStreams
 import io.reactivex.*
 import io.reactivex.subjects.Subject
+import org.intellij.lang.annotations.Flow
 
 enum class Parameter {
     CLICK, NULL, SUCCESS, EVENT
@@ -26,3 +28,8 @@ fun Completable.neverError(action: Subject<Throwable>? = null): Completable = ha
 fun <T> Flowable<T>.handleToError(action: Subject<Throwable>? = null): Flowable<T> = doOnError { action?.onNext(it) }
 fun <T> Flowable<T>.neverError(): Flowable<T> = onErrorResumeNext { _: Throwable -> Flowable.empty() }
 fun <T> Flowable<T>.neverError(action: Subject<Throwable>? = null): Flowable<T> = handleToError(action).neverError()
+
+fun <T> Observable<T>.toLiveData() = LiveDataReactiveStreams.fromPublisher(this.toFlowable(io.reactivex.BackpressureStrategy.DROP))
+fun <T> Single<T>.toLiveData() = LiveDataReactiveStreams.fromPublisher(this.toFlowable())
+fun <T> Completable.toLiveData() = LiveDataReactiveStreams.fromPublisher(this.toFlowable<T>())
+fun <T> Flowable<T>.toLiveData() = LiveDataReactiveStreams.fromPublisher(this)

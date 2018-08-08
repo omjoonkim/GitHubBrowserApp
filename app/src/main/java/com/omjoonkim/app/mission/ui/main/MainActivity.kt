@@ -10,16 +10,16 @@ import com.omjoonkim.app.mission.R
 import com.omjoonkim.app.mission.error.Errors
 import com.omjoonkim.app.mission.network.model.Repo
 import com.omjoonkim.app.mission.network.model.User
+import com.omjoonkim.app.mission.rx.toLiveData
 import com.omjoonkim.app.mission.setImageWithGlide
 import com.omjoonkim.app.mission.showToast
 import com.omjoonkim.app.mission.ui.BaseActivity
 import com.omjoonkim.app.mission.viewmodel.MainViewModel
-import com.trello.rxlifecycle2.kotlin.bindToLifecycle
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.viewholder_user_info.view.*
 import kotlinx.android.synthetic.main.viewholder_user_repo.view.*
 
-class MainActivity(viewModel: MainViewModel? = null) : BaseActivity<MainViewModel>(viewModel!!) {
+class MainActivity : BaseActivity<MainViewModel>() {
 
     private val adapter: MainListAdapter by lazy { MainListAdapter() }
 
@@ -27,33 +27,56 @@ class MainActivity(viewModel: MainViewModel? = null) : BaseActivity<MainViewMode
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         recyclerViewInit()
+    }
 
-        viewModel.outPuts.loading()
-            .bindToLifecycle(this)
-            .subscribe {
-                if (it)
-                    loadingDialog.show()
-                else
-                    loadingDialog.dismiss()
-            }
+    override fun bind(viewModel: MainViewModel) {
+        with(viewModel) {
+            viewModel.input.searchedUserName(intent.data.path.substring(1))
 
-        viewModel.outPuts.refreshListDatas()
-            .bindToLifecycle(this)
-            .subscribe {
-                adapter.user = it.first
-                adapter.repos = it.second
-                adapter.notifyDataSetChanged()
-            }
+            viewModel.output.actionBarInit()
+                .toLiveData()
+                .observe(
+                    { lifecycle },
+                    {
+                        actionbarInit(toolbar, title = it)
+                    }
+                )
 
-        viewModel.error
-            .bindToLifecycle(this)
-            .subscribe {
-                if (it is Errors)
-                    showToast(it.errorText)
-                else
-                    showToast("알 수 없는 에러.")
-                finish()
-            }
+            viewModel.output.loading()
+                .toLiveData()
+                .observe(
+                    { lifecycle },
+                    {
+                        if (it)
+                            loadingDialog.show()
+                        else
+                            loadingDialog.dismiss()
+                    }
+                )
+            viewModel.output.refreshListDatas()
+                .toLiveData()
+                .observe(
+                    { lifecycle },
+                    {
+                        adapter.user = it.first
+                        adapter.repos = it.second
+                        adapter.notifyDataSetChanged()
+                    }
+                )
+
+            viewModel.output.error()
+                .toLiveData()
+                .observe(
+                    { lifecycle },
+                    {
+                        if (it is Errors)
+                            showToast(it.errorText)
+                        else
+                            showToast("알 수 없는 에러.")
+                        finish()
+                    }
+                )
+        }
     }
 
     private fun recyclerViewInit() {

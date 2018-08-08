@@ -27,13 +27,15 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
-    implementation 'com.google.android.material:material:1.0.0-beta01'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0-beta01'
-    implementation 'androidx.cardview:cardview:1.0.0-beta01'
-    implementation 'androidx.core:core-ktx:1.0.0-beta01'
 
+    implementation 'androidx.appcompat:appcompat:1.0.0-rc01'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-rc01'
+    implementation 'com.google.android.material:material:1.0.0-rc01'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0-rc01'
+    implementation 'androidx.cardview:cardview:1.0.0-rc01'
+    implementation 'androidx.core:core-ktx:1.0.0-beta01'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
+    implementation 'androidx.lifecycle:lifecycle-reactivestreams:2.0.0-rc01'
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
@@ -41,15 +43,13 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
 
-    //rx
-    compile 'com.trello.rxlifecycle2:rxlifecycle:2.2.0'
-    compile 'com.trello.rxlifecycle2:rxlifecycle-components:2.0.1'
-    compile 'com.trello.rxlifecycle2:rxlifecycle-kotlin:2.0.1'
     //glide
-    compile 'com.github.bumptech.glide:glide:3.7.0'
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.1.12'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
     implementation 'io.reactivex.rxjava2:rxkotlin:2.2.0'
+
+
 
     testImplementation'junit:junit:4.12'
 }
