@@ -1,6 +1,5 @@
 package com.omjoonkim.app.mission.viewmodel
 
-import android.util.Log
 import com.omjoonkim.app.mission.Environment
 import com.omjoonkim.app.mission.network.model.Repo
 import com.omjoonkim.app.mission.network.model.User
@@ -18,7 +17,7 @@ interface MainViewModel : ViewModel {
 
 class MainViewModelImpl(private val environment: Environment) : BaseViewModel(), MainViewModel {
 
-    private val refreshListDatas = PublishSubject.create<Pair<User, List<Repo>>>()
+    private val refreshListData = PublishSubject.create<Pair<User, List<Repo>>>()
     private val loading = BehaviorSubject.create<Boolean>()
     private val searchedUserName = BehaviorSubject.create<String>()
     private val error = PublishSubject.create<Throwable>()
@@ -28,7 +27,7 @@ class MainViewModelImpl(private val environment: Environment) : BaseViewModel(),
         override fun searchedUserName(userName: String) = this@MainViewModelImpl.searchedUserName.onNext(userName)
     }
     override val output = object : MainViewModelOutPuts {
-        override fun refreshListDatas(): Observable<Pair<User, List<Repo>>> = refreshListDatas
+        override fun refreshListData(): Observable<Pair<User, List<Repo>>> = refreshListData
         override fun loading(): Observable<Boolean> = loading
         override fun error(): Observable<Throwable> = error
         override fun actionBarInit(): Observable<String> = actionBarInit
@@ -37,14 +36,8 @@ class MainViewModelImpl(private val environment: Environment) : BaseViewModel(),
     init {
         compositeDisposable.addAll(
             searchedUserName
-                .doOnNext {
-                    Log.e(it,it+"1")
-                }
                 .subscribe(actionBarInit::onNext),
             searchedUserName
-                .doOnNext {
-                    Log.e(it,it)
-                }
                 .doOnNext { loading.onNext(true) }
                 .flatMapMaybe {
                     environment.gitHubDataRepository
@@ -58,7 +51,7 @@ class MainViewModelImpl(private val environment: Environment) : BaseViewModel(),
                         )
                 }
                 .doOnNext { loading.onNext(false) }
-                .subscribe(refreshListDatas::onNext),
+                .subscribe(refreshListData::onNext),
             error
                 .map { false }
                 .subscribe(loading::onNext)
@@ -72,7 +65,7 @@ interface MainViewModelInputs : Input {
 
 interface MainViewModelOutPuts : Output {
     fun actionBarInit(): Observable<String>
-    fun refreshListDatas(): Observable<Pair<User, List<Repo>>>
+    fun refreshListData(): Observable<Pair<User, List<Repo>>>
     fun loading(): Observable<Boolean>
     fun error(): Observable<Throwable>
 }

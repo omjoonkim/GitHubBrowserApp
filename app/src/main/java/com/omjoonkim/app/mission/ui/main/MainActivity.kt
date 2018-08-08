@@ -53,7 +53,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
                             loadingDialog.dismiss()
                     }
                 )
-            viewModel.output.refreshListDatas()
+            viewModel.output.refreshListData()
                 .toLiveData()
                 .observe(
                     { lifecycle },
