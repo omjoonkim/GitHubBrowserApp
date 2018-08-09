@@ -31,9 +31,9 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
     override fun bind(viewModel: MainViewModel) {
         with(viewModel) {
-            viewModel.input.searchedUserName(intent.data.path.substring(1))
+            input.searchedUserName(intent.data.path.substring(1))
 
-            viewModel.output.actionBarInit()
+            output.actionBarInit()
                 .toLiveData()
                 .observe(
                     { lifecycle },
@@ -42,7 +42,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
                     }
                 )
 
-            viewModel.output.loading()
+            output.loading()
                 .toLiveData()
                 .observe(
                     { lifecycle },
@@ -53,7 +53,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
                             loadingDialog.dismiss()
                     }
                 )
-            viewModel.output.refreshListData()
+            output.refreshListData()
                 .toLiveData()
                 .observe(
                     { lifecycle },
@@ -64,7 +64,7 @@ class MainActivity : BaseActivity<MainViewModel>() {
                     }
                 )
 
-            viewModel.output.error()
+            output.error()
                 .toLiveData()
                 .observe(
                     { lifecycle },
