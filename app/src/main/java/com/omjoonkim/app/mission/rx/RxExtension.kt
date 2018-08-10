@@ -1,5 +1,7 @@
 package com.omjoonkim.app.mission.rx
 
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
 import io.reactivex.*
 import io.reactivex.subjects.Subject
@@ -31,5 +33,14 @@ fun <T> Flowable<T>.neverError(action: Subject<Throwable>? = null): Flowable<T> 
 
 fun <T> Observable<T>.toLiveData() = LiveDataReactiveStreams.fromPublisher(this.toFlowable(io.reactivex.BackpressureStrategy.DROP))
 fun <T> Single<T>.toLiveData() = LiveDataReactiveStreams.fromPublisher(this.toFlowable())
+fun <T> Maybe<T>.toLiveData() = LiveDataReactiveStreams.fromPublisher(this.toFlowable())
 fun <T> Completable.toLiveData() = LiveDataReactiveStreams.fromPublisher(this.toFlowable<T>())
 fun <T> Flowable<T>.toLiveData() = LiveDataReactiveStreams.fromPublisher(this)
+
+fun <T> LiveData<T>.observe(lifecycleOwner: LifecycleOwner, observer: (T) -> Unit) = observe({ lifecycleOwner.lifecycle }, observer)
+
+fun <T> Observable<T>.bind(lifecycleOwner: LifecycleOwner, observer: (T) -> Unit) = toLiveData().observe(lifecycleOwner, observer)
+fun <T> Single<T>.bind(lifecycleOwner: LifecycleOwner, observer: (T) -> Unit) = toLiveData().observe(lifecycleOwner, observer)
+fun <T> Maybe<T>.bind(lifecycleOwner: LifecycleOwner, observer: (T) -> Unit) = toLiveData().observe(lifecycleOwner, observer)
+fun <T> Completable.bind(lifecycleOwner: LifecycleOwner, observer: (T) -> Unit) = toLiveData<T>().observe(lifecycleOwner, observer)
+fun <T> Flowable<T>.bind(lifecycleOwner: LifecycleOwner, observer: (T) -> Unit) = toLiveData().observe(lifecycleOwner, observer)

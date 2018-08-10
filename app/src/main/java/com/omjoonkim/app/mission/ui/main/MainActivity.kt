@@ -10,7 +10,6 @@ import com.omjoonkim.app.mission.R
 import com.omjoonkim.app.mission.error.Errors
 import com.omjoonkim.app.mission.network.model.Repo
 import com.omjoonkim.app.mission.network.model.User
-import com.omjoonkim.app.mission.rx.toLiveData
 import com.omjoonkim.app.mission.setImageWithGlide
 import com.omjoonkim.app.mission.showToast
 import com.omjoonkim.app.mission.ui.BaseActivity
@@ -34,48 +33,30 @@ class MainActivity : BaseActivity<MainViewModel>() {
             input.searchedUserName(intent.data.path.substring(1))
 
             output.actionBarInit()
-                .toLiveData()
-                .observe(
-                    { lifecycle },
-                    {
-                        actionbarInit(toolbar, title = it)
-                    }
-                )
-
+                .bind {
+                    actionbarInit(toolbar, title = it)
+                }
             output.loading()
-                .toLiveData()
-                .observe(
-                    { lifecycle },
-                    {
-                        if (it)
-                            loadingDialog.show()
-                        else
-                            loadingDialog.dismiss()
-                    }
-                )
+                .bind {
+                    if (it)
+                        loadingDialog.show()
+                    else
+                        loadingDialog.dismiss()
+                }
             output.refreshListData()
-                .toLiveData()
-                .observe(
-                    { lifecycle },
-                    {
-                        adapter.user = it.first
-                        adapter.repos = it.second
-                        adapter.notifyDataSetChanged()
-                    }
-                )
-
+                .bind {
+                    adapter.user = it.first
+                    adapter.repos = it.second
+                    adapter.notifyDataSetChanged()
+                }
             output.error()
-                .toLiveData()
-                .observe(
-                    { lifecycle },
-                    {
-                        if (it is Errors)
-                            showToast(it.errorText)
-                        else
-                            showToast("알 수 없는 에러.")
-                        finish()
-                    }
-                )
+                .bind {
+                    if (it is Errors)
+                        showToast(it.errorText)
+                    else
+                        showToast("알 수 없는 에러.")
+                    finish()
+                }
         }
     }
 

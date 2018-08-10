@@ -14,7 +14,6 @@ object Empty : Input, Output
 abstract class BaseViewModel : ViewModel(){
     protected val compositeDisposable : CompositeDisposable = CompositeDisposable()
 
-
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.clear()

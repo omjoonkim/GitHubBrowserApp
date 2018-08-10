@@ -9,7 +9,9 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProviders
 import com.omjoonkim.app.mission.R
 import com.omjoonkim.app.mission.rx.Parameter
+import com.omjoonkim.app.mission.rx.bind
 import com.omjoonkim.app.mission.viewmodel.ViewModel
+import io.reactivex.*
 import io.reactivex.subjects.PublishSubject
 
 abstract class BaseActivity<T> : AppCompatActivity() where T : ViewModel {
@@ -41,4 +43,10 @@ abstract class BaseActivity<T> : AppCompatActivity() where T : ViewModel {
         super.onBackPressed()
         backPress.onNext(Parameter.EVENT)
     }
+
+    fun <T> Observable<T>.bind(observer: (T) -> Unit) = bind(this@BaseActivity, observer)
+    fun <T> Flowable<T>.bind(observer: (T) -> Unit) = bind(this@BaseActivity, observer)
+    fun <T> Single<T>.bind(observer: (T) -> Unit) = bind(this@BaseActivity, observer)
+    fun <T> Maybe<T>.bind(observer: (T) -> Unit) = bind(this@BaseActivity, observer)
+    fun <T> Completable.bind(observer: (T) -> Unit) = bind(this@BaseActivity, observer)
 }
