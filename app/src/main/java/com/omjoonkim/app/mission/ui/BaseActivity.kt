@@ -6,8 +6,12 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ViewModelProviders
 import com.omjoonkim.app.mission.R
+import com.omjoonkim.app.mission.ViewModelFactory
 import com.omjoonkim.app.mission.rx.Parameter
 import com.omjoonkim.app.mission.rx.bind
 import com.omjoonkim.app.mission.viewmodel.ViewModel

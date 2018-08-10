@@ -4,10 +4,9 @@ import android.app.Activity
 import android.app.Application
 import android.content.Intent
 import androidx.core.app.AppComponentFactory
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.*
 import com.omjoonkim.app.mission.di.AppModule
+import com.omjoonkim.app.mission.ui.BaseActivity
 import com.omjoonkim.app.mission.ui.main.MainActivity
 import com.omjoonkim.app.mission.ui.search.SearchActivity
 import com.omjoonkim.app.mission.viewmodel.MainViewModelImpl
@@ -27,29 +26,27 @@ class ComponentFactory : AppComponentFactory() {
 
     override fun instantiateActivityCompat(cl: ClassLoader, className: String, intent: Intent?): Activity {
         val activity = super.instantiateActivityCompat(cl, className, intent)
-        return when (activity) {
-            is MainActivity -> activity.apply {
-                lifecycle.addObserver(object : LifecycleObserver {
-                    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-                    fun onCreate() {
-                        this@apply.bind(
-                            androidx.lifecycle.ViewModelProviders.of(this@apply, viewModelFactory).get(MainViewModelImpl::class.java)
-                        )
-                    }
-                })
+        return if (activity is BaseActivity<*>) {
+            val viewModelProvider = ViewModelProviders.of(activity, viewModelFactory)
+            return when (activity) {
+                is MainActivity -> activity.preBindViewModel(
+                    viewModelProvider.get(MainViewModelImpl::class.java)
+                )
+                is SearchActivity -> activity.preBindViewModel(
+                    viewModelProvider.get(SearchViewModelImpl::class.java)
+                )
+                else -> throw IllegalArgumentException()
             }
-            is SearchActivity -> activity.apply {
-                lifecycle.addObserver(object : LifecycleObserver {
-                    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-                    fun onCreate() {
-                        this@apply.bind(
-                            androidx.lifecycle.ViewModelProviders.of(this@apply, viewModelFactory).get(SearchViewModelImpl::class.java)
-                        )
-                    }
-                })
-            }
-            else -> throw IllegalArgumentException()
-        }
+        } else activity
     }
 
+    private inline fun <reified VIEW_MODEL> BaseActivity<VIEW_MODEL>.preBindViewModel(viewModel: VIEW_MODEL)
+        where VIEW_MODEL : com.omjoonkim.app.mission.viewmodel.ViewModel = apply {
+        lifecycle.addObserver(object : LifecycleObserver {
+            @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+            fun onCreate() {
+                bind(viewModel)
+            }
+        })
+    }
 }
