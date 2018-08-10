@@ -7,7 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.omjoonkim.app.mission.R
-import com.omjoonkim.app.mission.error.Errors
+import com.omjoonkim.app.mission.error.Error
+import com.omjoonkim.app.mission.error.UnExpected
 import com.omjoonkim.app.mission.network.model.Repo
 import com.omjoonkim.app.mission.network.model.User
 import com.omjoonkim.app.mission.setImageWithGlide
@@ -51,10 +52,10 @@ class MainActivity : BaseActivity<MainViewModel>() {
                 }
             output.error()
                 .bind {
-                    if (it is Errors)
+                    if (it is Error)
                         showToast(it.errorText)
                     else
-                        showToast("알 수 없는 에러.")
+                        showToast(UnExpected.errorText)
                     finish()
                 }
         }
@@ -67,8 +68,8 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
     private inner class MainListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-        val VIEWTYPE_USER_INFO = 0
-        val VIEWTYPE_USER_REPO = 1
+        private val VIEWTYPE_USER_INFO = 0
+        private val VIEWTYPE_USER_REPO = 1
 
         var user: User? = null
         var repos = emptyList<Repo>()

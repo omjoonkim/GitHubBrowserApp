@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
 import io.reactivex.*
 import io.reactivex.subjects.Subject
-import org.intellij.lang.annotations.Flow
 
 enum class Parameter {
     CLICK, NULL, SUCCESS, EVENT

@@ -1,13 +1,17 @@
 package com.omjoonkim.app.mission.error
 
-abstract class Errors : Throwable() {
+sealed class Error : Throwable() {
     abstract val errorText: String
 }
 
-class NotFoundUserError : Errors() {
+object UnExpected : Error() {
+    override val errorText: String = "알 수 없는 에러."
+}
+
+object NotFoundUser : Error() {
     override val errorText: String = "해당 사용자를 찾을 수 없습니다."
 }
 
-class NotConnectedNetworkError : Errors() {
+object NotConnectedNetwork : Error() {
     override val errorText: String = "인터넷이 연결되어 있지 않습니다."
 }
