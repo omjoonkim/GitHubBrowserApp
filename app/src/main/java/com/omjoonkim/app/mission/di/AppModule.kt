@@ -20,9 +20,7 @@ class AppModule(private val app: App) {
 
     val applicationContexxt get() = app.applicationContext
 
-    val gson by lazy { Gson() }
-
-    val apiClient : APIClientType by lazy { APIClient(apiService) }
+    private val gson by lazy { Gson() }
 
     private val loggingInterceptor by lazy { HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY } }
 
@@ -34,7 +32,7 @@ class AppModule(private val app: App) {
             .build()
     }
 
-    private val apiService : APIService by lazy {
+    private val apiService: APIService by lazy {
         Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(APIService.EndPoint.baseUrl)
@@ -44,11 +42,12 @@ class AppModule(private val app: App) {
             .create(APIService::class.java)
     }
 
-    val gitHubDataRepository : GitHubRepositoryType by lazy { GitHubDataRepository(apiClient) }
+    private val apiClient: APIClientType by lazy { APIClient(apiService) }
 
-    val enviorment by lazy {
+    private val gitHubDataRepository: GitHubRepositoryType by lazy { GitHubDataRepository(apiClient) }
+
+    val environment by lazy {
         Environment(
-            apiClient,
             gitHubDataRepository,
             gson
         )

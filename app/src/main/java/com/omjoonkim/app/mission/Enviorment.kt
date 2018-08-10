@@ -5,7 +5,6 @@ import com.omjoonkim.app.mission.data.GitHubRepositoryType
 import com.omjoonkim.app.mission.network.APIClientType
 
 data class Environment(
-        var apiClient: APIClientType,
-        var gitHubDataRepository: GitHubRepositoryType,
-        var gson: Gson
+    var gitHubDataRepository: GitHubRepositoryType,
+    var gson: Gson
 )
