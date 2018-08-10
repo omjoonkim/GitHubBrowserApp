@@ -27,25 +27,24 @@ class ComponentFactory : AppComponentFactory() {
     override fun instantiateActivityCompat(cl: ClassLoader, className: String, intent: Intent?): Activity {
         val activity = super.instantiateActivityCompat(cl, className, intent)
         return if (activity is BaseActivity<*>) {
-            val viewModelProvider = ViewModelProviders.of(activity, viewModelFactory)
             return when (activity) {
-                is MainActivity -> activity.preBindViewModel(
-                    viewModelProvider.get(MainViewModelImpl::class.java)
-                )
-                is SearchActivity -> activity.preBindViewModel(
-                    viewModelProvider.get(SearchViewModelImpl::class.java)
-                )
+                is MainActivity -> activity.preBindViewModel {
+                    ViewModelProviders.of(this, viewModelFactory).get(MainViewModelImpl::class.java)
+                }
+                is SearchActivity -> activity.preBindViewModel {
+                    ViewModelProviders.of(this, viewModelFactory).get(SearchViewModelImpl::class.java)
+                }
                 else -> throw IllegalArgumentException()
             }
         } else activity
     }
 
-    private inline fun <reified VIEW_MODEL> BaseActivity<VIEW_MODEL>.preBindViewModel(viewModel: VIEW_MODEL)
+    private inline fun <reified VIEW_MODEL> BaseActivity<VIEW_MODEL>.preBindViewModel(crossinline findViewModel: BaseActivity<VIEW_MODEL>.() -> VIEW_MODEL)
         where VIEW_MODEL : com.omjoonkim.app.mission.viewmodel.ViewModel = apply {
         lifecycle.addObserver(object : LifecycleObserver {
             @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
             fun onCreate() {
-                bind(viewModel)
+                bind(findViewModel())
             }
         })
     }
