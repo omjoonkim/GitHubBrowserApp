@@ -15,7 +15,9 @@ interface MainViewModel : ViewModel {
     val output: MainViewModelOutPuts
 }
 
-class MainViewModelImpl(private val environment: Environment) : BaseViewModel(), MainViewModel {
+class MainViewModelImpl(
+    private val environment: Environment
+) : BaseViewModel(), MainViewModel {
 
     private val refreshListData = PublishSubject.create<Pair<User, List<Repo>>>()
     private val loading = BehaviorSubject.create<Boolean>()

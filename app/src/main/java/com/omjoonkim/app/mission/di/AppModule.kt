@@ -22,7 +22,11 @@ class AppModule(private val app: App) {
 
     private val gson by lazy { Gson() }
 
-    private val loggingInterceptor by lazy { HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY } }
+    private val loggingInterceptor by lazy {
+        HttpLoggingInterceptor().apply {
+            level = HttpLoggingInterceptor.Level.BODY
+        }
+    }
 
     private val okHttpClient by lazy {
         OkHttpClient.Builder()
@@ -44,7 +48,9 @@ class AppModule(private val app: App) {
 
     private val apiClient: APIClientType by lazy { APIClient(apiService) }
 
-    private val gitHubDataRepository: GitHubRepositoryType by lazy { GitHubDataRepository(apiClient) }
+    private val gitHubDataRepository: GitHubRepositoryType by lazy {
+        GitHubDataRepository(apiClient)
+    }
 
     val environment by lazy {
         Environment(
