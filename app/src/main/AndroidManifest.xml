@@ -1,4 +1,4 @@
-<manifest package="com.omjoonkim.app.mission"
+<manifest package="com.omjoonkim.app.GitHubBrowserApp"
 		  xmlns:android="http://schemas.android.com/apk/res/android"
 		  xmlns:tools="http://schemas.android.com/tools"
 	>
@@ -6,7 +6,7 @@
 	<uses-permission android:name="android.permission.INTERNET" />
 
 	<application
-		android:name=".App"
+		android:name="com.omjoonkim.app.GitHubBrowserApp.App"
 		android:allowBackup="true"
 		android:appComponentFactory=".ComponentFactory"
 		android:icon="@mipmap/ic_launcher"
@@ -18,7 +18,7 @@
 		>
 
 		<activity
-			android:name="com.omjoonkim.app.mission.ui.search.SearchActivity"
+			android:name="com.omjoonkim.app.GitHubBrowserApp.ui.search.SearchActivity"
 			>
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
@@ -28,7 +28,7 @@
 		</activity>
 
 		<activity
-			android:name=".ui.main.MainActivity"
+			android:name="com.omjoonkim.app.GitHubBrowserApp.ui.main.MainActivity"
 			android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
 			>
 			<intent-filter>
