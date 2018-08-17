@@ -2,13 +2,14 @@ package com.omjoonkim.app.GitHubBrowserApp.ui
 
 import android.app.ProgressDialog
 import android.graphics.Color
+import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModel
 import com.omjoonkim.app.GitHubBrowserApp.R
 import com.omjoonkim.app.GitHubBrowserApp.rx.Parameter
 import com.omjoonkim.app.GitHubBrowserApp.rx.bind
-import com.omjoonkim.app.GitHubBrowserApp.viewmodel.ViewModel
 import io.reactivex.*
 import io.reactivex.subjects.PublishSubject
 

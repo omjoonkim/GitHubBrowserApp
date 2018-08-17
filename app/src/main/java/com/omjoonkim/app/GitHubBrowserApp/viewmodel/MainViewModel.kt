@@ -10,14 +10,14 @@ import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
 
-interface MainViewModel : ViewModel {
-    val input: MainViewModelInputs
-    val output: MainViewModelOutPuts
+abstract class MainViewModel : BaseViewModel() {
+    abstract val input: MainViewModelInputs
+    abstract val output: MainViewModelOutPuts
 }
 
 class MainViewModelImpl(
     private val environment: Environment
-) : BaseViewModel(), MainViewModel {
+) : MainViewModel() {
 
     private val refreshListData = PublishSubject.create<Pair<User, List<Repo>>>()
     private val loading = BehaviorSubject.create<Boolean>()

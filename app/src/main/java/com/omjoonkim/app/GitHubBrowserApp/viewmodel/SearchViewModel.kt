@@ -6,12 +6,12 @@ import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
-interface SearchViewModel : ViewModel {
-    val input: SearchViewModelInPuts
-    val output: SearchViewModelOutPuts
+abstract class SearchViewModel : BaseViewModel() {
+    abstract val input: SearchViewModelInPuts
+    abstract val output: SearchViewModelOutPuts
 }
 
-class SearchViewModelImpl : BaseViewModel(), SearchViewModel {
+class SearchViewModelImpl : SearchViewModel() {
 
     private val name = PublishSubject.create<String>()
     private val clickSearchButton = PublishSubject.create<Parameter>()

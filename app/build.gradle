@@ -35,6 +35,10 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0-rc01'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
     implementation 'androidx.lifecycle:lifecycle-reactivestreams:2.0.0-rc01'
+
+    //koin
+    implementation 'org.koin:koin-androidx-viewmodel:1.0.0-beta-3'
+
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.4.0'

@@ -1,35 +1,18 @@
 package com.omjoonkim.app.GitHubBrowserApp
 
 import android.app.Activity
-import android.app.Application
 import android.content.Intent
 import androidx.core.app.AppComponentFactory
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import androidx.lifecycle.ViewModelProviders
-import com.omjoonkim.app.GitHubBrowserApp.di.AppModule
+import androidx.lifecycle.ViewModel
 import com.omjoonkim.app.GitHubBrowserApp.ui.BaseActivity
 import com.omjoonkim.app.GitHubBrowserApp.ui.main.MainActivity
 import com.omjoonkim.app.GitHubBrowserApp.ui.search.SearchActivity
-import com.omjoonkim.app.GitHubBrowserApp.viewmodel.MainViewModelImpl
-import com.omjoonkim.app.GitHubBrowserApp.viewmodel.SearchViewModelImpl
-import com.omjoonkim.app.GitHubBrowserApp.viewmodel.ViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class ComponentFactory : AppComponentFactory() {
-
-    private lateinit var appModule: AppModule
-    private lateinit var viewModelFactory: ViewModelFactory
-
-    override fun instantiateApplicationCompat(
-        cl: ClassLoader,
-        className: String
-    ): Application {
-        val app = super.instantiateApplicationCompat(cl, className) as App
-        appModule = AppModule(app)
-        viewModelFactory = ViewModelFactory(appModule)
-        return app
-    }
 
     override fun instantiateActivityCompat(
         cl: ClassLoader,
@@ -40,10 +23,10 @@ class ComponentFactory : AppComponentFactory() {
         return if (activity is BaseActivity<*>) {
             when (activity) {
                 is MainActivity -> activity.preBindViewModel {
-                    ViewModelProviders.of(this, viewModelFactory).get(MainViewModelImpl::class.java)
+                    activity.bind(activity.getViewModel())
                 }
                 is SearchActivity -> activity.preBindViewModel {
-                    ViewModelProviders.of(this, viewModelFactory).get(SearchViewModelImpl::class.java)
+                    activity.bind(activity.getViewModel())
                 }
                 else -> throw IllegalArgumentException()
             }
@@ -51,12 +34,12 @@ class ComponentFactory : AppComponentFactory() {
     }
 
     private fun <T : ViewModel> BaseActivity<T>.preBindViewModel(
-        findViewModel: BaseActivity<T>.() -> T
+        bindViewModel: () -> Unit
     ) = apply {
         lifecycle.addObserver(object : LifecycleObserver {
             @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
             fun onCreate() {
-                bind(findViewModel())
+                bindViewModel.invoke()
             }
         })
     }
