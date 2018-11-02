@@ -13,10 +13,11 @@ class SearchViewModel(
 
     private val name = PublishSubject.create<String>()
     private val clickSearchButton = PublishSubject.create<Parameter>()
-
     val input = object : SearchViewModelInPuts {
-        override fun name(name: String) = this@SearchViewModel.name.onNext(name)
-        override fun clickSearchButton() = this@SearchViewModel.clickSearchButton.onNext(Parameter.CLICK)
+        override fun name(name: String) =
+            this@SearchViewModel.name.onNext(name)
+        override fun clickSearchButton() =
+            this@SearchViewModel.clickSearchButton.onNext(Parameter.CLICK)
     }
 
     private val state = MutableLiveData<SearchViewState>()

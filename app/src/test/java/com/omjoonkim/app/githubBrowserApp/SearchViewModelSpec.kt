@@ -38,57 +38,34 @@ object SearchViewModelSpec : KoinSpek({
     val viewModel: SearchViewModel by inject()
 
     Feature("SearchViewModel spec") {
-
-        Scenario("input not empty name") {
-            When("name is beomjoon") {
-                viewModel.input.name("beomjoon")
+        val name = "omjoonkim"
+        Scenario("빈값이 아닌 이름을 입력 받는다") {
+            When("${name}을 입력 받았을 때") {
+                viewModel.input.name(name)
             }
-            Then("should output searchButtonEnable is true") {
+            Then("검색 버튼이 활성화 되어 있어야 한다") {
                 assertEquals(true, viewModel.output.state().value?.enableSearchButton)
             }
         }
 
-        Scenario("input empty name") {
-            When("name is Empty") {
+        Scenario("빈값의 이름을 입력 받는다") {
+            When("빈값의 이름을 입력 받았을 때") {
                 viewModel.input.name("")
             }
-            Then("should output searchButtonEnable is false") {
+            Then("검색 버튼은 비활성화 되어 있어야 한다") {
                 assertEquals(false, viewModel.output.state().value?.enableSearchButton)
             }
         }
 
-        Scenario("input not empty name") {
-            When("name is Empty") {
-                viewModel.input.name("park")
+        Scenario("검색 버튼을 클릭 한다") {
+            Given("${name}이 입력되어 있다.") {
+                viewModel.input.name(name)
             }
-            Then("should output searchButtonEnable is true") {
-                assertEquals(true, viewModel.output.state().value?.enableSearchButton)
-            }
-        }
-
-        Scenario("click searchButton when name not empty") {
-            Given("name is beomjoon") {
-                viewModel.input.name("beomjoon")
-            }
-            When("clicked searchButton") {
+            When("검색 버튼을 클릭 하였을 때") {
                 viewModel.input.clickSearchButton()
             }
-
-            Then("goResultsssActivity.value == beomjoon ") {
-                assertEquals("beomjoon", viewModel.output.goResultActivity().value)
-            }
-        }
-
-        Scenario("click searchButton when name empty") {
-            Given("name is empty") {
-                viewModel.input.name("")
-            }
-            When("clicked searchButton") {
-                viewModel.input.clickSearchButton()
-            }
-
-            Then("nothing happend") {
-                assertEquals("", viewModel.output.goResultActivity().value)
+            Then("결과 화면으로 이동한다") {
+                assertEquals(name, viewModel.output.goResultActivity().value)
             }
         }
     }

@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.omjoonkim.app.githubBrowserApp.databinding.ActivityMainBinding
 import com.omjoonkim.app.githubBrowserApp.databinding.ViewholderUserInfoBinding
@@ -17,26 +16,31 @@ import com.omjoonkim.project.githubBrowser.domain.entity.Repo
 import com.omjoonkim.app.githubBrowserApp.R
 import com.omjoonkim.project.githubBrowser.domain.entity.User
 import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.core.parameter.parametersOf
 
 class MainActivity : BaseActivity() {
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         binding.setLifecycleOwner(this)
-        val viewModel = getViewModel<MainViewModel>()
-        binding.viewModel = viewModel
-        actionbarInit(binding.toolbar, onClickHomeButton = {
-            viewModel.input.onClickHomeButton()
-        })
-        binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
-        viewModel.input.searchedUserName(intent.data.path.substring(1))
+        val viewModel = getViewModel<MainViewModel> {
+            parametersOf(intent.data.path.substring(1))
+        }
+        binding.viewModel = viewModel
+
+        actionbarInit(binding.toolbar, onClickHomeButton = {
+            viewModel.input.clickHomeButton()
+        })
 
         with(viewModel.output) {
-            refreshListData().observe {
-                binding.recyclerView.adapter = MainListAdapter(it.first, it.second, viewModel.input::onClickUser)
+            refreshListData().observe { (user, repos) ->
+                binding.recyclerView.adapter = MainListAdapter(
+                    user,
+                    repos,
+                    viewModel.input::clickUser
+                )
             }
             showErrorToast().observe { showToast(it) }
             goProfileActivity().observe {

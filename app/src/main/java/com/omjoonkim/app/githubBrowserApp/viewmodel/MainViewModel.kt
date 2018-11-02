@@ -11,26 +11,22 @@ import com.omjoonkim.app.githubBrowserApp.rx.neverError
 import com.omjoonkim.project.githubBrowser.domain.entity.Repo
 import com.omjoonkim.project.githubBrowser.domain.entity.User
 import com.omjoonkim.project.githubBrowser.domain.interactor.usecases.GetUserData
-import io.reactivex.Maybe
 import io.reactivex.Observable
-import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.Observables
-import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
 
 class MainViewModel(
+    searchedUserName: String,
     private val getUserData: GetUserData,
     logger: Logger
 ) : BaseViewModel() {
 
-    private val searchedUserName = PublishSubject.create<String>()
-    private val clickedUserName = PublishSubject.create<User>()
-    private val onClickHomeButton = PublishSubject.create<Parameter>()
+    private val clickUser = PublishSubject.create<User>()
+    private val clickHomeButton = PublishSubject.create<Parameter>()
     val input: MainViewModelInputs = object : MainViewModelInputs {
-        override fun searchedUserName(userName: String) = this@MainViewModel.searchedUserName.onNext(userName)
-        override fun onClickUser(user: User) = clickedUserName.onNext(user)
-        override fun onClickHomeButton() = onClickHomeButton.onNext(Parameter.CLICK)
+        override fun clickUser(user: User) = clickUser.onNext(user)
+        override fun clickHomeButton() = clickHomeButton.onNext(Parameter.CLICK)
     }
 
     private val state = MutableLiveData<MainViewState>()
@@ -47,42 +43,36 @@ class MainViewModel(
     }
 
     init {
-        val showLoading = BehaviorSubject.createDefault(false)
         val error = PublishSubject.create<Throwable>()
-        val requestListData = searchedUserName
-            .flatMapMaybe {
-                getUserData.get(it).neverError(error)
-            }.share()
+        val userName = Observable.just(searchedUserName).share()
+        val requestListData = userName.flatMapMaybe {
+            getUserData.get(it).neverError(error)
+        }.share()
         compositeDisposable.addAll(
             Observables
                 .combineLatest(
                     Observable.merge(
-                        showLoading,
-                        searchedUserName.map { true },
                         requestListData.map { false },
                         error.map { false }
-                    ),
-                    searchedUserName,
+                    ).startWith(true),
+                    userName,
                     ::MainViewState
                 ).subscribe(state::setValue, logger::d),
             requestListData.subscribe(refreshListData::setValue, logger::d),
-            error
-                .map {
-                    if (it is Error)
-                        it.errorText
-                    else UnExpected.errorText
-                }.subscribe(showErrorToast::setValue, logger::d),
-            clickedUserName.map { it.name }
-                .subscribe(goProfileActivity::setValue, logger::d),
-            onClickHomeButton.subscribe(finish::call, logger::d)
+            error.map {
+                if (it is Error)
+                    it.errorText
+                else UnExpected.errorText
+            }.subscribe(showErrorToast::setValue, logger::d),
+            clickUser.map { it.name }.subscribe(goProfileActivity::setValue, logger::d),
+            clickHomeButton.subscribe(finish::call, logger::d)
         )
     }
 }
 
 interface MainViewModelInputs : Input {
-    fun searchedUserName(userName: String)
-    fun onClickUser(user: User)
-    fun onClickHomeButton()
+    fun clickUser(user: User)
+    fun clickHomeButton()
 }
 
 interface MainViewModelOutPuts : Output {

@@ -16,7 +16,7 @@ import org.koin.dsl.module.Module
 import org.koin.dsl.module.module
 
 val myModule: Module = module {
-    viewModel { MainViewModel(get(), get()) }
+    viewModel { (id: String) -> MainViewModel(id, get(), get()) }
     viewModel { SearchViewModel(get()) }
 
     //app
@@ -33,5 +33,10 @@ val myModule: Module = module {
     single { GithubBrowserRemoteImpl(get(), get(), get()) as GithubBrowserRemote }
     single { RepoEntityMapper() }
     single { UserEntityMapper() }
-    single { GithubBrowserServiceFactory.makeGithubBrowserService(BuildConfig.DEBUG, "https://api.github.com") }
+    single {
+        GithubBrowserServiceFactory.makeGithubBrowserService(
+            BuildConfig.DEBUG,
+            "https://api.github.com"
+        )
+    }
 }
