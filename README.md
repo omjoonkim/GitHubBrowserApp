@@ -1,3 +1,3 @@
 # GitHubBrowserApp
 
-Using AppComponentFactory✨
+Naver android tech concert 발표자료.
