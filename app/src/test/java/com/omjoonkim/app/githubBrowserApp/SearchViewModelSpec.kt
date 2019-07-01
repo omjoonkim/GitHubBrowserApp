@@ -5,16 +5,18 @@ import androidx.arch.core.executor.TaskExecutor
 import com.omjoonkim.app.githubBrowserApp.di.KoinSpek
 import com.omjoonkim.app.githubBrowserApp.di.test_module
 import com.omjoonkim.app.githubBrowserApp.viewmodel.SearchViewModel
-import org.koin.standalone.StandAloneContext.startKoin
-import org.koin.standalone.StandAloneContext.stopKoin
-import org.koin.standalone.inject
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.test.inject
 import org.spekframework.spek2.style.gherkin.Feature
 import kotlin.test.assertEquals
 
 object SearchViewModelSpec : KoinSpek({
 
     beforeEachTest {
-        startKoin(test_module)
+        startKoin {
+            modules(test_module)
+        }
         ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {
             override fun executeOnDiskIO(runnable: Runnable) {
                 runnable.run()

@@ -5,19 +5,20 @@ import androidx.arch.core.executor.TaskExecutor
 import com.omjoonkim.app.githubBrowserApp.di.KoinSpek
 import com.omjoonkim.app.githubBrowserApp.di.test_module
 import com.omjoonkim.app.githubBrowserApp.viewmodel.MainViewModel
-import com.omjoonkim.project.githubBrowser.domain.entity.User
 import com.omjoonkim.project.githubBrowser.domain.interactor.usecases.GetUserData
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.parameter.parametersOf
-import org.koin.standalone.StandAloneContext.startKoin
-import org.koin.standalone.StandAloneContext.stopKoin
-import org.koin.standalone.inject
+import org.koin.test.inject
 import org.spekframework.spek2.style.gherkin.Feature
 import kotlin.test.assertEquals
 
 object MainViewModelSpec : KoinSpek({
 
     beforeEachTest {
-        startKoin(test_module)
+        startKoin {
+            modules(test_module)
+        }
         ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {
             override fun executeOnDiskIO(runnable: Runnable) {
                 runnable.run()
@@ -43,7 +44,7 @@ object MainViewModelSpec : KoinSpek({
 
     Feature("MainViewModel spec") {
         Scenario("유저가 화면에 들어오면 검색한 유저의 프로필,저장소 데이터가 정상적으로 보여야 한다") {
-            Given("검색하려는 유저의 이름은 omjoonkim이다"){
+            Given("검색하려는 유저의 이름은 omjoonkim이다") {
                 userName = "omjoonkim"
             }
             Then("화면에 검색한 유저의 데이터가 정상적으로 나타난다") {

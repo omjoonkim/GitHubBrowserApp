@@ -11,9 +11,9 @@ import com.omjoonkim.project.githubBrowser.remote.GithubBrowserRemoteImpl
 import com.omjoonkim.project.githubBrowser.remote.GithubBrowserServiceFactory
 import com.omjoonkim.project.githubBrowser.remote.mapper.RepoEntityMapper
 import com.omjoonkim.project.githubBrowser.remote.mapper.UserEntityMapper
-import org.koin.androidx.viewmodel.ext.koin.viewModel
-import org.koin.dsl.module.Module
-import org.koin.dsl.module.module
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.Module
+import org.koin.dsl.module
 
 val myModule: Module = module {
     viewModel { (id: String) -> MainViewModel(id, get(), get()) }
@@ -24,7 +24,7 @@ val myModule: Module = module {
     single { AppSchedulerProvider() as SchedulersProvider }
 
     //domain
-    single { GetUserData(get(), get()) }
+    factory { GetUserData(get(), get()) }
 
     //data
     single { GithubBrowserDataSource(get()) as GitHubBrowserRepository }
