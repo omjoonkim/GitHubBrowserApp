@@ -1,15 +1,15 @@
 package com.omjoonkim.app.githubBrowserApp.ui.repo
 
-import com.omjoonkim.app.githubBrowserApp.model.RepoDetailModel
+import com.omjoonkim.app.githubBrowserApp.repository.RepoRepository
 import com.omjoonkim.app.githubBrowserApp.ui.BasePresenter
 
 class RepoDetailPresenter(
-    view: RepoDetailView
+    view: RepoDetailView,
+    private val repoRepository: RepoRepository
 ) : BasePresenter<RepoDetailView>(view) {
 
     fun onCreate(userName: String, repoName: String) {
-        compositeDisposable.add(
-            RepoDetailModel.getRepoDetail(userName, repoName)
+            repoRepository.getRepo(userName, repoName)
                 .subscribe({
                     view.setName(it.name)
                     view.setDescription(it.description ?: "")
@@ -17,7 +17,5 @@ class RepoDetailPresenter(
                 }, {
                     it.printStackTrace()
                 })
-        )
-
     }
 }

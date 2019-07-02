@@ -8,13 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-object ApiClient {
-
-    val githubBrowserService: GithubService
-
-    init {
-        githubBrowserService = makeGithubBrowserService(BuildConfig.DEBUG, "https://api.github.com")
-    }
+object ApiServiceFactory {
 
     fun makeGithubBrowserService(debug: Boolean, baseUrl: String): GithubService {
         val okHttpClient = makeOkHttpClient(

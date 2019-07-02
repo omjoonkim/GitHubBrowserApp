@@ -1,5 +1,9 @@
 package com.omjoonkim.app.githubBrowserApp
 
+import com.omjoonkim.app.githubBrowserApp.network.ApiServiceFactory
+import com.omjoonkim.app.githubBrowserApp.network.GithubService
+import com.omjoonkim.app.githubBrowserApp.repository.RepoRepository
+import com.omjoonkim.app.githubBrowserApp.repository.RepoRepositoryImpl
 import com.omjoonkim.app.githubBrowserApp.ui.repo.RepoDetailPresenter
 import com.omjoonkim.app.githubBrowserApp.ui.repo.RepoDetailView
 import com.omjoonkim.app.githubBrowserApp.viewmodel.MainViewModel
@@ -21,7 +25,7 @@ val myModule: Module = module {
     //presentation
     viewModel { (id: String) -> MainViewModel(id, get(), get()) }
     viewModel { SearchViewModel(get()) }
-    factory { (view: RepoDetailView) -> RepoDetailPresenter(view) }
+    factory { (view: RepoDetailView) -> RepoDetailPresenter(view, get()) }
 
     //app
     single { Logger() }
@@ -32,6 +36,8 @@ val myModule: Module = module {
 
     //data
     single { GithubBrowserDataSource(get()) as GitHubBrowserRepository }
+    single { RepoRepositoryImpl(get()) as RepoRepository }
+    single { ApiServiceFactory.makeGithubBrowserService(BuildConfig.DEBUG, "https://api.github.com") as GithubService }
 
     //remote
     single { GithubBrowserRemoteImpl(get(), get(), get()) as GithubBrowserRemote }
