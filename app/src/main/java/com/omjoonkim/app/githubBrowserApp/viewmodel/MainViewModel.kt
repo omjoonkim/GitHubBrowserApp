@@ -23,9 +23,11 @@ class MainViewModel(
 ) : BaseViewModel() {
 
     private val clickUser = PublishSubject.create<User>()
+    private val clickRepo = PublishSubject.create<Pair<User, Repo>>()
     private val clickHomeButton = PublishSubject.create<Parameter>()
     val input: MainViewModelInputs = object : MainViewModelInputs {
         override fun clickUser(user: User) = clickUser.onNext(user)
+        override fun clickRepo(user: User, repo: Repo) = clickRepo.onNext(user to repo)
         override fun clickHomeButton() = clickHomeButton.onNext(Parameter.CLICK)
     }
 
@@ -33,12 +35,14 @@ class MainViewModel(
     private val refreshListData = MutableLiveData<Pair<User, List<Repo>>>()
     private val showErrorToast = MutableLiveData<String>()
     private val goProfileActivity = MutableLiveData<String>()
+    private val goRepoDetailActivity = MutableLiveData<Pair<String, String>>()
     private val finish = MutableLiveData<Unit>()
     val output = object : MainViewModelOutPuts {
         override fun state() = state
         override fun refreshListData() = refreshListData
         override fun showErrorToast() = showErrorToast
         override fun goProfileActivity() = goProfileActivity
+        override fun goRepoDetailActivity() = goRepoDetailActivity
         override fun finish() = finish
     }
 
@@ -65,6 +69,7 @@ class MainViewModel(
                 else UnExpected.errorText
             }.subscribe(showErrorToast::setValue, logger::d),
             clickUser.map { it.name }.subscribe(goProfileActivity::setValue, logger::d),
+            clickRepo.map { it.first.name to it.second.name }.subscribe(goRepoDetailActivity::setValue, logger::d),
             clickHomeButton.subscribe(finish::call, logger::d)
         )
     }
@@ -72,6 +77,7 @@ class MainViewModel(
 
 interface MainViewModelInputs : Input {
     fun clickUser(user: User)
+    fun clickRepo(user: User, repo: Repo)
     fun clickHomeButton()
 }
 
@@ -80,6 +86,7 @@ interface MainViewModelOutPuts : Output {
     fun refreshListData(): LiveData<Pair<User, List<Repo>>>
     fun showErrorToast(): LiveData<String>
     fun goProfileActivity(): LiveData<String>
+    fun goRepoDetailActivity(): LiveData<Pair<String, String>>
     fun finish(): LiveData<Unit>
 }
 

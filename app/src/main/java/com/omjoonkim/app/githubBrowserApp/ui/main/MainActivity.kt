@@ -14,6 +14,7 @@ import com.omjoonkim.app.githubBrowserApp.ui.BaseActivity
 import com.omjoonkim.app.githubBrowserApp.viewmodel.MainViewModel
 import com.omjoonkim.project.githubBrowser.domain.entity.Repo
 import com.omjoonkim.app.githubBrowserApp.R
+import com.omjoonkim.app.githubBrowserApp.ui.repo.RepoDetailActivity
 import com.omjoonkim.project.githubBrowser.domain.entity.User
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
@@ -39,7 +40,8 @@ class MainActivity : BaseActivity() {
                 binding.recyclerView.adapter = MainListAdapter(
                     user,
                     repos,
-                    viewModel.input::clickUser
+                    viewModel.input::clickUser,
+                    viewModel.input::clickRepo
                 )
             }
             showErrorToast().observe { showToast(it) }
@@ -51,6 +53,9 @@ class MainActivity : BaseActivity() {
                     )
                 )
             }
+            goRepoDetailActivity().observe {
+                RepoDetailActivity.start(this@MainActivity, it.first, it.second)
+            }
             finish().observe {
                 onBackPressed()
             }
@@ -60,7 +65,8 @@ class MainActivity : BaseActivity() {
     private inner class MainListAdapter(
         val user: User,
         val repos: List<Repo>,
-        val onClickItem: (User) -> Unit
+        val onClickUser: (User) -> Unit,
+        val onClickRepo: (User, Repo) -> Unit
     ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
         private val VIEWTYPE_USER_INFO = 0
@@ -68,8 +74,16 @@ class MainActivity : BaseActivity() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
             when (viewType) {
-                0 -> UserInfoViewHolder(ViewholderUserInfoBinding.inflate(layoutInflater), onClickItem)
-                1 -> UserRepoViewHolder(ViewholderUserRepoBinding.inflate(layoutInflater))
+                0 -> UserInfoViewHolder(ViewholderUserInfoBinding.inflate(layoutInflater)).apply {
+                    itemView.setOnClickListener {
+                        onClickUser.invoke(user)
+                    }
+                }
+                1 -> UserRepoViewHolder(ViewholderUserRepoBinding.inflate(layoutInflater)).apply {
+                    itemView.setOnClickListener {
+                        onClickRepo.invoke(user, repos[adapterPosition - 1])
+                    }
+                }
                 else -> throw IllegalStateException()
             }
 
@@ -89,14 +103,10 @@ class MainActivity : BaseActivity() {
         override fun getItemCount(): Int = repos.size + 1
 
         private inner class UserInfoViewHolder(
-            private val binding: ViewholderUserInfoBinding,
-            val onClickItem: (User) -> Unit
+            private val binding: ViewholderUserInfoBinding
         ) : RecyclerView.ViewHolder(binding.root) {
             fun bind(item: User) {
                 binding.data = item
-                itemView.setOnClickListener {
-                    onClickItem.invoke(item)
-                }
             }
         }
 
