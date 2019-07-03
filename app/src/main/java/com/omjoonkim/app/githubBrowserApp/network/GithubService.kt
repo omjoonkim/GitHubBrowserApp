@@ -1,5 +1,6 @@
 package com.omjoonkim.app.githubBrowserApp.network
 
+import com.omjoonkim.project.githubBrowser.remote.model.ForkModel
 import com.omjoonkim.project.githubBrowser.remote.model.RepoModel
 import io.reactivex.Single
 import retrofit2.http.GET
@@ -12,4 +13,10 @@ interface GithubService {
         @Path("userName") userName: String,
         @Path("repo") repoName: String
     ): Single<RepoModel>
+
+    @GET("/repos/{userName}/{repo}/forks")
+    fun getForks(
+        @Path("userName") userName: String,
+        @Path("repo") repoName: String
+    ): Single<List<ForkModel>>
 }
