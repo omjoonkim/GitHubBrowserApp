@@ -35,3 +35,6 @@ fun <T> LiveData<T>.observe(lifecycleOwner: LifecycleOwner, observer: (T) -> Uni
 fun <T1, T2, R> Observable<T1>.takeWhen(observable: Observable<T2>, biFunction: (T2, T1) -> R): Observable<R> = compose<R> {
     observable.withLatestFrom(it, BiFunction { t1, t2 -> biFunction.invoke(t1, t2) })
 }
+
+
+fun printStackTrace(t : Throwable) = t.printStackTrace()
