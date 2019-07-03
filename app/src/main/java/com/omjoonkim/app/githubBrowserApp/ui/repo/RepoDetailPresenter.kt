@@ -1,7 +1,12 @@
 package com.omjoonkim.app.githubBrowserApp.ui.repo
 
 import com.omjoonkim.app.githubBrowserApp.repository.RepoRepository
+import com.omjoonkim.app.githubBrowserApp.rx.printStackTrace
 import com.omjoonkim.app.githubBrowserApp.ui.BasePresenter
+import com.omjoonkim.project.githubBrowser.remote.model.ForkModel
+import com.omjoonkim.project.githubBrowser.remote.model.RepoModel
+import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 
 class RepoDetailPresenter(
     view: RepoDetailView,
@@ -9,13 +14,19 @@ class RepoDetailPresenter(
 ) : BasePresenter<RepoDetailView>(view) {
 
     fun onCreate(userName: String, repoName: String) {
-            repoRepository.getRepo(userName, repoName)
-                .subscribe({
-                    view.setName(it.name)
-                    view.setDescription(it.description ?: "")
-                    view.setStarCount(it.starCount)
-                }, {
-                    it.printStackTrace()
-                })
+        compositeDisposable.add(
+            Single.zip(
+                repoRepository.getRepo(userName, repoName),
+                repoRepository.getForks(userName, repoName),
+                BiFunction { t1: RepoModel, t2: List<ForkModel> ->
+                    t1 to t2
+                }
+            ).subscribe({ (repo, forks) ->
+                view.setName(repo.name)
+                view.setDescription(repo.description ?: "")
+                view.setStarCount(repo.starCount)
+                view.refreshForks(forks)
+            }, ::printStackTrace)
+        )
     }
 }
