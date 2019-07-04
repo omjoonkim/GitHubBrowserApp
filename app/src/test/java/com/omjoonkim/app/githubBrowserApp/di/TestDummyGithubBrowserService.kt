@@ -6,12 +6,12 @@ import com.omjoonkim.project.githubBrowser.remote.model.UserModel
 import io.reactivex.Single
 
 class TestDummyGithubBrowserService : GithubBrowserService {
-    override fun getUserInfo(userName: String): Single<UserModel> =
+    override fun getUser(userName: String): Single<UserModel> =
         Single.just(
             UserModel("omjoonkim", "")
         )
 
-    override fun getUserRepos(userName: String): Single<List<RepoModel>> =
+    override fun getRepos(userName: String): Single<List<RepoModel>> =
         Single.just(
             listOf(
                 RepoModel("repo1", "repo1 description", "1"),
