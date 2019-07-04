@@ -8,7 +8,7 @@
 
         <variable
             name="data"
-            type="com.omjoonkim.project.githubBrowser.remote.model.ForkModel"
+            type="com.omjoonkim.project.githubBrowser.domain.entity.Fork"
             />
     </data>
 

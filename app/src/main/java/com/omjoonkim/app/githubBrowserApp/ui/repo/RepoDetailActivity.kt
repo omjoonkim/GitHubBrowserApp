@@ -12,6 +12,7 @@ import com.omjoonkim.app.githubBrowserApp.R
 import com.omjoonkim.app.githubBrowserApp.databinding.ViewholderRepoForkBinding
 import com.omjoonkim.app.githubBrowserApp.databinding.ViewholderUserInfoBinding
 import com.omjoonkim.app.githubBrowserApp.ui.BaseActivity
+import com.omjoonkim.project.githubBrowser.domain.entity.Fork
 import com.omjoonkim.project.githubBrowser.domain.entity.User
 import com.omjoonkim.project.githubBrowser.remote.model.ForkModel
 import kotlinx.android.synthetic.main.activity_repo.*
@@ -38,13 +39,23 @@ class RepoDetailActivity : BaseActivity(), RepoDetailView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_repo)
+        actionbarInit(toolbar, onClickHomeButton = {
+            onBackPressed()
+        })
         initRecyclerView()
-        presenter.onCreate(intent.getStringExtra(KEY_USER_NAME), intent.getStringExtra(KEY_REPO_NAME))
+        presenter.onCreate(
+            intent.getStringExtra(KEY_USER_NAME),
+            intent.getStringExtra(KEY_REPO_NAME)
+        )
     }
 
     private fun initRecyclerView() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = Adapter()
+    }
+
+    override fun setToolbarTitle(title: String) {
+        supportActionBar?.title = title
     }
 
     override fun setName(name: String) {
@@ -59,15 +70,15 @@ class RepoDetailActivity : BaseActivity(), RepoDetailView {
         this.starCount.text = count
     }
 
-    override fun refreshForks(data: List<ForkModel>) {
+    override fun refreshForks(data: List<Fork>) {
         (recyclerView.adapter as? Adapter)?.refresh(data)
     }
 
     private inner class Adapter : RecyclerView.Adapter<Adapter.ViewHolder>() {
 
-        private val data = mutableListOf<ForkModel>()
+        private val data = mutableListOf<Fork>()
 
-        fun refresh(data: List<ForkModel>) {
+        fun refresh(data: List<Fork>) {
             this.data.clear()
             this.data.addAll(data)
             notifyDataSetChanged()
@@ -85,7 +96,7 @@ class RepoDetailActivity : BaseActivity(), RepoDetailView {
         private inner class ViewHolder(
             private val binding: ViewholderRepoForkBinding
         ) : RecyclerView.ViewHolder(binding.root) {
-            fun bind(item: ForkModel) {
+            fun bind(item: Fork) {
                 binding.data = item
             }
         }
