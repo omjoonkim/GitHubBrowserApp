@@ -16,8 +16,8 @@ class GetRepoDetail(
 ) : SingleUseCase<Pair<Repo, List<Fork>>, Pair<String,String>>(schedulersProvider) {
 
     override fun buildUseCaseSingle(params: Pair<String,String>): Single<Pair<Repo, List<Fork>>> = Single.zip(
-        repoRepository.getRepo(params.first, params.second),
-        forkRepository.getForks(params.first, params.second),
+        repoRepository.get(params.first, params.second),
+        forkRepository.gets(params.first, params.second),
         BiFunction{ t1 : Repo, t2 : List<Fork> ->
             t1 to t2
         }

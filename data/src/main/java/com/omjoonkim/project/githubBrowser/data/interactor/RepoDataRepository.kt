@@ -10,11 +10,11 @@ class RepoDataRepository(
     private val remote: GithubBrowserRemote
 ) : RepoRepository {
 
-    override fun getRepos(
+    override fun gets(
         userName: String
     ): Single<List<Repo>> = remote.getRepos(userName)
 
-    override fun getRepo(
+    override fun get(
         userName: String,
         id: String
     ): Single<Repo> = remote.getRepo(userName, id)

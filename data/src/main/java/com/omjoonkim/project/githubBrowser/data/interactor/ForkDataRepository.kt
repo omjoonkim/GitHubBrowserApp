@@ -11,7 +11,7 @@ class ForkDataRepository(
     private val remote: GithubBrowserRemote
 ) : ForkRepository {
 
-    override fun getForks(
+    override fun gets(
         userName: String,
         id: String
     ): Single<List<Fork>> = remote.getForks(userName, id)
