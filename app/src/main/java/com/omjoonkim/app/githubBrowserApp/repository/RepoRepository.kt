@@ -4,5 +4,5 @@ import com.omjoonkim.project.githubBrowser.remote.model.RepoModel
 import io.reactivex.Single
 
 interface RepoRepository {
-    fun getRepo(userName: String, id: String): Single<RepoModel>
+    fun get(userName: String, id: String): Single<RepoModel>
 }

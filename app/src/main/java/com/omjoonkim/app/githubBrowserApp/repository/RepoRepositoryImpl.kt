@@ -10,7 +10,7 @@ class RepoRepositoryImpl(
     private val api :  GithubService
 ) : RepoRepository {
 
-    override fun getRepo(
+    override fun get(
         userName: String,
         id: String
     ): Single<RepoModel> =

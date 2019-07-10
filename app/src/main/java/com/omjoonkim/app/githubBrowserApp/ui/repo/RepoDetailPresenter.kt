@@ -9,7 +9,8 @@ class RepoDetailPresenter(
 ) : BasePresenter<RepoDetailView>(view) {
 
     fun onCreate(userName: String, repoName: String) {
-            repoRepository.getRepo(userName, repoName)
+        compositeDisposable.addAll(
+            repoRepository.get(userName, repoName)
                 .subscribe({
                     view.setName(it.name)
                     view.setDescription(it.description ?: "")
@@ -17,5 +18,6 @@ class RepoDetailPresenter(
                 }, {
                     it.printStackTrace()
                 })
+        )
     }
 }
