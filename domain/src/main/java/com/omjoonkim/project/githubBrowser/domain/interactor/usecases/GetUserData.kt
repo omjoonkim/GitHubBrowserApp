@@ -18,8 +18,8 @@ class GetUserData(
 ) {
     override fun buildUseCaseSingle(userName: String): Single<Pair<User, List<Repo>>> =
         Single.zip(
-            userRepository.getUserInfo(userName),
-            repoRepository.getRepos(userName),
+            userRepository.get(userName),
+            repoRepository.gets(userName),
             BiFunction<User, List<Repo>, Pair<User, List<Repo>>> { t1, t2 ->
                 Pair(t1, t2.sortedByDescending { it.starCount })
             }

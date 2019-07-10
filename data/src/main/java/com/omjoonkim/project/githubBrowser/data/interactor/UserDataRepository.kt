@@ -8,5 +8,5 @@ import io.reactivex.Single
 class UserDataRepository(
     private val remote: GithubBrowserRemote
 ) : UserRepository {
-    override fun getUserInfo(userName: String): Single<User> = remote.getUserInfo(userName)
+    override fun get(userName: String): Single<User> = remote.getUserInfo(userName)
 }

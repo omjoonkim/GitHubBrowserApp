@@ -5,5 +5,5 @@ import com.omjoonkim.project.githubBrowser.domain.entity.Repo
 import io.reactivex.Single
 
 interface ForkRepository {
-    fun getForks(userName: String, id: String): Single<List<Fork>>
+    fun gets(userName: String, id: String): Single<List<Fork>>
 }
