@@ -9,7 +9,7 @@ class RepoDetailPresenter(
 
     fun onCreate(userName: String, repoName: String) {
         compositeDisposable.add(
-            RepoDetailModel.getRepoDetail(userName, repoName)
+            RepoDetailModel.getRepo(userName, repoName)
                 .subscribe({
                     view.setName(it.name)
                     view.setDescription(it.description ?: "")
