@@ -9,4 +9,7 @@ interface RepoDetailView : BaseView {
     fun setStarCount(count: String)
     fun refreshForks(data: List<Fork>)
     fun setToolbarTitle(title: String)
+    fun toastRateLimitError()
+    fun toastNetworkError()
+    fun toastUnexpectedError()
 }

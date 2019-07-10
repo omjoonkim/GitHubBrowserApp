@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.omjoonkim.app.githubBrowserApp.R
 import com.omjoonkim.app.githubBrowserApp.databinding.ViewholderRepoForkBinding
 import com.omjoonkim.app.githubBrowserApp.databinding.ViewholderUserInfoBinding
+import com.omjoonkim.app.githubBrowserApp.showToast
 import com.omjoonkim.app.githubBrowserApp.ui.BaseActivity
 import com.omjoonkim.project.githubBrowser.domain.entity.Fork
 import com.omjoonkim.project.githubBrowser.domain.entity.User
@@ -72,6 +73,18 @@ class RepoDetailActivity : BaseActivity(), RepoDetailView {
 
     override fun refreshForks(data: List<Fork>) {
         (recyclerView.adapter as? Adapter)?.refresh(data)
+    }
+
+    override fun toastRateLimitError() {
+        showToast("please check your rate limit")
+    }
+
+    override fun toastNetworkError() {
+        showToast("please check your network")
+    }
+
+    override fun toastUnexpectedError() {
+        showToast("Unexpected Error...... :(")
     }
 
     private inner class Adapter : RecyclerView.Adapter<Adapter.ViewHolder>() {
