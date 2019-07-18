@@ -1,6 +1,6 @@
 # GitHubBrowserApp
 
-Naver android tech concert 발표자료.
+여러 발표로 사용된 저장소 입니다 :)
 
 
 ## [Android : P AppComponentFactory](https://sites.google.com/view/gdg-io-ex-18-and)
