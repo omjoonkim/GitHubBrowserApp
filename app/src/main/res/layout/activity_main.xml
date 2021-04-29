@@ -31,7 +31,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:title="@{viewModel.output.state().title}"
+                app:title="@{viewModel.state().title}"
                 />
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -52,7 +52,7 @@
         <FrameLayout
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:visibility="@{viewModel.output.state().showLoading ? View.VISIBLE : View.GONE}"
+            android:visibility="@{viewModel.state().showLoading ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

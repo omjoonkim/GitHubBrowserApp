@@ -37,15 +37,15 @@
             android:id="@+id/editText"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:onTextChanged='@{(s,start,end,before) -> viewModel.input.name(s.toString ?? "")}'
+            android:onTextChanged='@{(s,start,end,before) -> viewModel.name(s.toString ?? "")}'
             />
 
         <Button
             android:id="@+id/button_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="@{viewModel.output.state().enableSearchButton}"
-            android:onClick="@{(v) -> viewModel.input.clickSearchButton()}"
+            android:enabled="@{viewModel.state().enableSearchButton}"
+            android:onClick="@{(v) -> viewModel.clickSearchButton()}"
             android:text="search"
             />
     </LinearLayout>

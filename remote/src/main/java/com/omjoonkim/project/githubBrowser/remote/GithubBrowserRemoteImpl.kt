@@ -10,32 +10,27 @@ import com.omjoonkim.project.githubBrowser.remote.mapper.UserEntityMapper
 import io.reactivex.Single
 
 class GithubBrowserRemoteImpl(
-    private val githubBrowserAppService: GithubBrowserService,
-    private val userEntityMapper: UserEntityMapper,
-    private val repoEntityMapper: RepoEntityMapper,
-    private val forkEntityMapper: ForkEntityMapper
+        private val githubBrowserAppService: GithubBrowserService,
+        private val userEntityMapper: UserEntityMapper,
+        private val repoEntityMapper: RepoEntityMapper,
+        private val forkEntityMapper: ForkEntityMapper
 ) : GithubBrowserRemote {
 
-    override fun getUserInfo(userName: String): Single<User> = githubBrowserAppService
-        .getUser(userName)
-        .map { userEntityMapper.mapFromRemote(it) }
-        .composeDomain()
+    override suspend fun getUserInfo(userName: String): User = githubBrowserAppService
+            .getUser(userName).let(userEntityMapper::mapFromRemote)
 
-    override fun getRepos(userName: String): Single<List<Repo>> = githubBrowserAppService
-        .getRepos(userName)
-        .map { it.map { repoEntityMapper.mapFromRemote(it) } }
-        .composeDomain()
+    override suspend fun getRepos(userName: String): List<Repo> = githubBrowserAppService
+            .getRepos(userName)
+            .let { it.map { repoEntityMapper.mapFromRemote(it) } }
 
-    override fun getRepo(userName: String, id: String): Single<Repo> = githubBrowserAppService
-        .getRepo(userName, id)
-        .map { repoEntityMapper.mapFromRemote(it) }
-        .composeDomain()
+    override suspend fun getRepo(userName: String, id: String): Repo = githubBrowserAppService
+            .getRepo(userName, id)
+            .let(repoEntityMapper::mapFromRemote)
 
-    override fun getForks(
-        userName: String,
-        id: String
-    ): Single<List<Fork>> = githubBrowserAppService
-        .getForks(userName, id)
-        .map { it.map { forkEntityMapper.mapFromRemote(it) } }
-        .composeDomain()
+    override suspend fun getForks(
+            userName: String,
+            id: String
+    ): List<Fork> = githubBrowserAppService
+            .getForks(userName, id)
+            .let { it.map { forkEntityMapper.mapFromRemote(it) } }
 }

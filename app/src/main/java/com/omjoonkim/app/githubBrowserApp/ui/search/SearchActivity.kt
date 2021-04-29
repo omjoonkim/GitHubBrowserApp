@@ -10,6 +10,7 @@ import com.omjoonkim.app.githubBrowserApp.R
 import com.omjoonkim.app.githubBrowserApp.databinding.ActivitySearchBinding
 import com.omjoonkim.app.githubBrowserApp.ui.BaseActivity
 import com.omjoonkim.app.githubBrowserApp.viewmodel.SearchViewModel
+import com.omjoonkim.app.githubBrowserApp.viewmodel.SearchViewModelImpl
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class SearchActivity : BaseActivity() {
@@ -19,21 +20,21 @@ class SearchActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = DataBindingUtil.setContentView<ActivitySearchBinding>(this, R.layout.activity_search)
-        binding.setLifecycleOwner(this)
+        binding.lifecycleOwner = this
         actionbarInit(binding.toolbar, isEnableNavi = false)
 
-        val viewModel = getViewModel<SearchViewModel>()
+        val viewModel: SearchViewModel = getViewModel<SearchViewModelImpl>()
         binding.viewModel = viewModel
 
-        viewModel.output.goResultActivity()
-            .observe {
-                keyboardController.hideSoftInputFromWindow(binding.editText.windowToken, 0)
-                startActivity(
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse("githubbrowser://repos/$it")
+        viewModel.goResultActivity()
+                .observe {
+                    keyboardController.hideSoftInputFromWindow(binding.editText.windowToken, 0)
+                    startActivity(
+                            Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse("githubbrowser://repos/$it")
+                            )
                     )
-                )
-            }
+                }
     }
 }

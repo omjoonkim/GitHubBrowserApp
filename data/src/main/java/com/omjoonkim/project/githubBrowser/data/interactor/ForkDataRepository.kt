@@ -6,13 +6,16 @@ import com.omjoonkim.project.githubBrowser.domain.entity.Repo
 import com.omjoonkim.project.githubBrowser.domain.repository.ForkRepository
 import com.omjoonkim.project.githubBrowser.domain.repository.RepoRepository
 import io.reactivex.Single
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class ForkDataRepository(
-    private val remote: GithubBrowserRemote
+    private val remote: GithubBrowserRemote,
+    private val dispatcher : CoroutineDispatcher
 ) : ForkRepository {
 
-    override fun gets(
-        userName: String,
-        id: String
-    ): Single<List<Fork>> = remote.getForks(userName, id)
+    override suspend fun gets(userName: String, id: String): List<Fork> =  withContext(dispatcher){
+        remote.getForks(userName, id)
+    }
 }

@@ -3,10 +3,14 @@ package com.omjoonkim.project.githubBrowser.data.interactor
 import com.omjoonkim.project.githubBrowser.data.source.GithubBrowserRemote
 import com.omjoonkim.project.githubBrowser.domain.entity.User
 import com.omjoonkim.project.githubBrowser.domain.repository.UserRepository
-import io.reactivex.Single
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 
 class UserDataRepository(
-    private val remote: GithubBrowserRemote
+    private val remote: GithubBrowserRemote,
+    private val dispatcher : CoroutineDispatcher
 ) : UserRepository {
-    override fun get(userName: String): Single<User> = remote.getUserInfo(userName)
+    override suspend fun get(userName: String): User = withContext(dispatcher){
+        remote.getUserInfo(userName)
+    }
 }

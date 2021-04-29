@@ -3,39 +3,31 @@ package com.omjoonkim.app.githubBrowserApp.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.omjoonkim.app.githubBrowserApp.Logger
-import com.omjoonkim.app.githubBrowserApp.rx.Parameter
-import com.omjoonkim.app.githubBrowserApp.rx.takeWhen
-import io.reactivex.subjects.PublishSubject
 
-class SearchViewModel(
-    logger: Logger
-) : BaseViewModel() {
-
-    private val name = PublishSubject.create<String>()
-    private val clickSearchButton = PublishSubject.create<Parameter>()
-    val input = object : SearchViewModelInPuts {
-        override fun name(name: String) =
-            this@SearchViewModel.name.onNext(name)
-        override fun clickSearchButton() =
-            this@SearchViewModel.clickSearchButton.onNext(Parameter.CLICK)
-    }
+class SearchViewModelImpl(
+        logger: Logger
+) : BaseViewModel<Input, Output>(), SearchViewModel {
 
     private val state = MutableLiveData<SearchViewState>()
     private val goResultActivity = MutableLiveData<String>()
-    val output = object : SearchViewModelOutPuts {
-        override fun state() = state
-        override fun goResultActivity() = goResultActivity
-    }
 
     init {
-        compositeDisposable.addAll(
-            name.map { SearchViewState(it.isNotEmpty()) }
-                .subscribe(state::setValue, logger::d),
-            name.takeWhen(clickSearchButton) { _, t2 -> t2 }
-                .subscribe(goResultActivity::setValue, logger::d)
-        )
+        state.value = SearchViewState("", false)
     }
+
+    override fun name(name: String) {
+        state.value = state.value?.copy(keyword = name, enableSearchButton = name.isNotEmpty())
+    }
+
+    override fun clickSearchButton() {
+        goResultActivity.value = state.value?.keyword
+    }
+
+    override fun state() = state
+    override fun goResultActivity() = goResultActivity
 }
+
+interface SearchViewModel : SearchViewModelInPuts, SearchViewModelOutPuts
 
 interface SearchViewModelInPuts : Input {
     fun name(name: String)
@@ -48,5 +40,6 @@ interface SearchViewModelOutPuts : Output {
 }
 
 data class SearchViewState(
-    val enableSearchButton: Boolean
+        val keyword: String,
+        val enableSearchButton: Boolean
 )
